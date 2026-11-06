@@ -6,7 +6,7 @@ AI, tech and cyber news and tips in Malayalam, on YouTube, Instagram and Faceboo
 
 | Pack | From the video | What's inside |
 |---|---|---|
-| [🔁 LOOP](loop/) | Ralph Loop: make AI finish the job | The loop prompt, Anthropic's Ralph Loop plugin, and the loop-until-done Claude Code skill |
+| [🔁 LOOP](loop/) | Ralph Loop: make AI finish the job | The loop prompt, Anthropic's Ralph Loop plugin, the loop-until-done Claude Code skill, a complete Ralph Loop guide, PROMPT.md + fix_plan.md templates, and references |
 
 Commented a keyword under one of our videos? Your pack is in the folder with that name.
 

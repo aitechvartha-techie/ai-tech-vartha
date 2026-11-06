@@ -3,11 +3,19 @@
 AI-യോട് ജോലി ഏൽപ്പിച്ചാൽ പകുതി ചെയ്തിട്ട് "Done" എന്ന് പറയുന്നുണ്ടോ? ഈ pack അതിനുള്ളതാണ്.
 (Does your AI say "Done" after doing half the job? This pack is for that.)
 
-From the **AI Tech Vartha** Short on the Ralph Loop. Three things inside:
+From the **AI Tech Vartha** Short on the Ralph Loop.
 
-1. [The loop prompt](#1-the-loop-prompt) I use all the time: works in any AI coding tool
-2. [The Ralph Loop plugin](#2-the-ralph-loop-plugin-claude-code): Anthropic's official one, for Claude Code
-3. [The loop-until-done skill](#3-the-loop-until-done-skill-claude-code): install once, Claude follows the loop by itself
+| | What | Use it when |
+|---|---|---|
+| 1 | [The loop prompt](#1-the-loop-prompt) I use all the time | Any AI coding tool: copy, paste, add your task |
+| 2 | [The Ralph Loop plugin](#2-the-ralph-loop-plugin-claude-code), Anthropic's official one | Claude Code: let it keep going until the job is really done |
+| 3 | [The loop-until-done skill](#3-the-loop-until-done-skill-claude-code) | Claude Code: install once, it follows the loop by itself |
+| 📘 | **[The complete Ralph Loop guide](ralph-loop-guide.md)** | Origin, how it works, 3 ways to run it, Huntley's rules, cost and safety, troubleshooting |
+| 📄 | [templates/PROMPT.md](templates/PROMPT.md) · [templates/fix_plan.md](templates/fix_plan.md) | Ready files for a real Ralph run: fill in the brackets and start |
+| 🔗 | [references.md](references.md) | Every source: Huntley's original post, Anthropic's plugin and docs |
+
+**New to this? Start here:** use the loop prompt today in whatever tool you have. If you use Claude Code,
+install the skill. When you're ready to let it run on its own, read the guide and use the templates.
 
 ---
 
@@ -62,6 +70,7 @@ Good to know (from the plugin's own notes):
 - `--completion-promise` is an exact text match, so give it one clear word like `DONE`.
 
 Source: [anthropics/claude-plugins-official › ralph-loop](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/ralph-loop)
+· Full walkthrough, the original Bash version and Huntley's rules: **[ralph-loop-guide.md](ralph-loop-guide.md)**
 
 Also built into Claude Code: `/goal all tests in tests/ pass and lint is clean` keeps Claude going
 until that condition is met.
