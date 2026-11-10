@@ -1,0 +1,28 @@
+{
+  "name": "Arjun Menon",
+  "headline": "B.Com graduate · Accounts and GST",
+  "contact": {"phone": "+91 94470 55555", "email": "arjun.menon@example.com", "location": "Thrissur, Kerala"},
+  "summary": "Commerce graduate looking for an accounts assistant role. I've done GST filing and Tally entries for two small shops during my internship, and I like work where the numbers have to be exactly right.",
+  "education": [
+    {"degree": "B.Com (Finance and Taxation)", "school": "Sree Kerala Varma College, Thrissur", "score": "78%", "start": "2022", "end": "2025",
+     "details": ["Final-year project: compared GST filing time for 12 Thrissur shops before and after using Tally Prime."]},
+    {"degree": "Higher Secondary (Commerce)", "school": "Govt. HSS, Thrissur", "score": "91%", "end": "2022"}
+  ],
+  "experience": [
+    {"role": "Accounts Intern", "org": "K.P. Associates (Chartered Accountants)", "location": "Thrissur", "start": "Dec 2024", "end": "Feb 2025",
+     "bullets": ["Entered about 300 purchase and sales bills a month in Tally Prime for two retail clients.",
+                 "Prepared GSTR-1 and GSTR-3B drafts for the senior accountant to review; none needed corrections in my last month.",
+                 "Matched bank statements with ledgers and flagged 14 entries that didn't add up."]}
+  ],
+  "projects": [
+    {"name": "Expense tracker in Google Sheets", "date": "2024", "bullets": ["Made a monthly expense sheet for my family with category totals and a chart; my parents still use it."]}
+  ],
+  "skills": [
+    {"group": "Accounts", "items": ["Tally Prime", "GST returns (GSTR-1, 3B)", "Bank reconciliation", "TDS basics"]},
+    {"group": "Computer", "items": ["Excel (VLOOKUP, pivot tables)", "Google Sheets", "Typing 40 wpm"]}
+  ],
+  "certifications": [{"name": "Tally Prime with GST", "issuer": "Tally Education", "date": "2024"}],
+  "languages": ["Malayalam", "English", "Hindi"],
+  "personal": {"Notice period": "Immediate", "Willing to relocate": "Kochi / Thrissur"},
+  "style": {"template": "classic", "preset": "fresher", "pages": 1}
+}

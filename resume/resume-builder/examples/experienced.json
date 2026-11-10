@@ -1,0 +1,39 @@
+{
+  "name": "Anjali Nair",
+  "headline": "Data Analyst · SQL, Power BI, Python",
+  "contact": {"phone": "+91 98470 12345", "email": "anjali.nair@example.com", "location": "Kochi, Kerala", "linkedin": "linkedin.com/in/anjali-nair-example"},
+  "summary": "Data analyst with 3 years in retail and fintech. I turn messy sales and payments data into weekly Power BI reports that managers actually use, and I automate the boring parts with SQL and Python.",
+  "experience": [
+    {"role": "Data Analyst", "org": "Spice Route Retail Pvt Ltd", "location": "Kochi", "start": "Jun 2023", "end": "Present",
+     "bullets": [
+       "Built a Power BI sales dashboard for 42 stores that replaced 6 manual Excel reports; regional managers now check it every Monday.",
+       "Wrote SQL checks that catch duplicate bills before month-end, cutting reconciliation time from 3 days to 1.",
+       "Found that 18% of returns came from two product lines with wrong size charts; fixing the charts brought returns down by a third in one quarter.",
+       "Trained 9 store supervisors to read the dashboard and raise stock requests from it."
+     ]},
+    {"role": "Junior Analyst", "org": "PayKart Fintech", "location": "Bengaluru", "start": "Jul 2021", "end": "May 2023",
+     "bullets": [
+       "Cleaned and joined UPI transaction logs (about 2 lakh rows a day) in Python for the fraud team's daily report.",
+       "Automated a weekly merchant summary with Python and Google Sheets, saving the team about 5 hours a week.",
+       "Answered ad-hoc data questions from product and ops teams, usually within the same day."
+     ]}
+  ],
+  "projects": [
+    {"name": "KSRTC bus delay analysis", "link": "github.com/anjali-example/ksrtc-delays", "date": "2024",
+     "bullets": ["Scraped 6 months of public arrival data and showed which routes run late most often, with a simple map in Python."]}
+  ],
+  "skills": [
+    {"group": "Analysis", "items": ["SQL (PostgreSQL, BigQuery)", "Python (pandas)", "Excel (Power Query, pivot tables)"]},
+    {"group": "Reporting", "items": ["Power BI (DAX)", "Google Data Studio", "Google Sheets"]},
+    {"group": "Other", "items": ["A/B test basics", "Git", "Explaining numbers to non-technical teams"]}
+  ],
+  "education": [
+    {"degree": "B.Sc. Statistics", "school": "St. Teresa's College, Ernakulam", "score": "CGPA 8.4/10", "start": "2018", "end": "2021"}
+  ],
+  "certifications": [
+    {"name": "Microsoft Certified: Power BI Data Analyst Associate", "issuer": "Microsoft", "date": "2024"},
+    {"name": "Google Data Analytics Certificate", "issuer": "Coursera", "date": "2022"}
+  ],
+  "languages": ["English", "Malayalam", "Hindi", "Tamil (spoken)"],
+  "style": {"template": "modern", "page": "A4", "pages": 1, "accent": "#1F4E79", "preset": "experienced"}
+}
