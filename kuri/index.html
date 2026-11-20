@@ -107,6 +107,7 @@ input[type=range]{width:100%;accent-color:var(--brand);height:30px}
 .mini{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .mini span{font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
 .mini span.bad{background:var(--bad-soft);border-color:transparent;color:var(--bad);font-weight:600}
+.bidbox{margin:12px 0 4px;padding:12px;border-radius:14px;background:rgba(120,90,255,.08)}
 .hint{font-size:13px;color:var(--muted);margin-top:4px}
 .hint button{border:0;background:none;color:var(--brand);font-family:inherit;font-weight:600;font-size:13px;padding:0;cursor:pointer;text-decoration:underline}
 .chart{width:100%;height:170px;display:block;cursor:ew-resize;touch-action:none;margin-top:6px}
@@ -255,6 +256,7 @@ html[lang=en] .affix.suf input{padding-right:96px}
       <div><label for="hGst" data-t="gstL"></label><input id="hGst" type="number" step="1"></div>
       <div><label for="hLoan" data-t="loanR"></label><input id="hLoan" type="number" step="0.5"></div>
       <div><label for="hFdK" data-t="fdK"></label><input id="hFdK" type="number" step="0.1"></div>
+      <div><label for="hFdK2" data-t="fdK2"></label><input id="hFdK2" type="number" step="0.1"></div>
       <div><label for="hFdB" data-t="fdB"></label><input id="hFdB" type="number" step="0.1"></div>
     </div>
     <button type="button" class="hlink" id="hReset" data-t="hReset"></button>
@@ -323,7 +325,8 @@ html[lang=en] .affix.suf input{padding-right:96px}
     <details class="more">
       <summary data-t="adv"></summary>
       <div class="adv">
-        <div><label for="fdK" data-t="fdK"></label><input id="fdK" autocomplete="off" type="number" step="0.1" value="7.7"></div>
+        <div><label for="fdK" data-t="fdK"></label><input id="fdK" autocomplete="off" type="number" step="0.1" value="8.5"></div>
+        <div><label for="fdK2" data-t="fdK2"></label><input id="fdK2" autocomplete="off" type="number" step="0.1" value="7.5"></div>
         <div><label for="fdB" data-t="fdB"></label><input id="fdB" autocomplete="off" type="number" step="0.1" value="6.5"></div>
         <div><label for="loan" data-t="loanR"></label><input id="loan" autocomplete="off" type="number" step="0.5" value="16"></div>
         <div><label for="maxd" data-t="maxd"></label><input id="maxd" autocomplete="off" type="number" value="30"></div>
@@ -356,11 +359,9 @@ html[lang=en] .affix.suf input{padding-right:96px}
         <div class="legend"><span><i class="dot" style="background:var(--save)"></i><span data-t="lg1"></span></span><span><i class="dot" style="background:var(--bad)"></i><span data-t="lg2"></span></span></div>
 
       </div>
+      <div class="bidbox" id="bidBox"><label class="lab" for="bid" data-t="bidS"></label>
+        <div class="affix pre"><span class="ax">₹</span><input id="bid" autocomplete="off" type="number" min="0" step="500" value="60000" inputmode="numeric"></div><div class="hint" id="bidHint"></div></div>
       <div id="dBody"></div>
-      <details class="more" id="bidBox" style="margin-top:12px">
-        <summary data-t="bidS"></summary>
-        <div style="margin-top:8px"><input id="bid" autocomplete="off" type="number" min="0" step="500" value="60000" inputmode="numeric"><div class="hint" id="bidHint"></div></div>
-      </details>
     </div>
   </section>
 
@@ -406,10 +407,10 @@ ml:{
   type:'ആരാണ് നടത്തുന്നത്?', ksfe:'KSFE / കമ്പനി', ksfeS:'5% കമ്മീഷൻ', local:'നാട്ടുകുറി', localS:'കമ്മീഷൻ ഇല്ല',
   heat:'ലേലത്തിൽ കിഴിവ് എത്ര പോകും?', hot:'കൂടുതൽ', hotS:'തിരക്ക്', normal:'സാധാരണ', cool:'കുറവ്', coolS:'തിരക്കില്ല',
   paidL:'അല്ലെങ്കിൽ: ഈ മാസം അടച്ച തുക (അറിയാമെങ്കിൽ)', paidNo:'ആദ്യ മാസം ലാഭവിഹിതം ഇല്ല; 2-ാം മാസം മുതൽ ഇത് ഉപയോഗിക്കാം.', paidOk:(d,p,m)=>`ഇതനുസരിച്ച് ${m}-ാം മാസത്തെ ലേലക്കിഴിവ് ഏകദേശം ${d} (സലയുടെ ${p}%). ബാക്കി മാസങ്ങൾ ഇതിനോട് ഒത്തുനോക്കി.`, paidBad:'തുക മാസത്തവണയെക്കാൾ കൂടരുത്.', now:'ഇപ്പോൾ എത്രാമത്തെ മാസം?', nowH:'പുതിയ കുറി ആണെങ്കിൽ 1 എന്ന് ഇടുക.', moS:'മാസം', moN:'-ാം മാസം', follow:'പുതിയ AI ടൂളുകൾക്ക് follow ചെയ്യൂ', madeBy:'AI Tech Vartha-യുടെ ഫ്രീ ടൂൾ', madeS:'AI, ടെക്, സൈബർ: വാർത്തകളും ടിപ്‌സും ലളിതമായ മലയാളത്തിൽ',
-  adv:'പലിശ നിരക്കുകൾ മാറ്റാം', gstL:'കമ്മീഷനിലെ GST %', exRates:'ഇവ ഉദാഹരണ നിരക്കുകളാണ്. നിങ്ങളുടെ കുറിയിലോ ബാങ്കിലോ വേറെയാണെങ്കിൽ മാറ്റുക.', hlpBtn:'🧭 സഹായിയോടൊപ്പം തുടങ്ങാം', hlpBtnS:'3 ചെറിയ ചോദ്യങ്ങൾ · നിരക്കുകൾ മാറ്റാം', h1T:'നിങ്ങളുടെ കുറി', h1S:'പാസ്ബുക്ക് നോക്കി ഇടാം. അറിയില്ലെങ്കിൽ ഇപ്പോഴുള്ളത് മതി.', h2T:'നിരക്കുകൾ', hReset:'↺ ഉദാഹരണ നിരക്കുകളിലേക്ക് മടങ്ങുക', h3T:'എന്താണ് അറിയേണ്ടത്?', h3S:'ഒന്ന് തിരഞ്ഞെടുക്കൂ. പിന്നീട് മാറ്റാം.', hBack:'← പിന്നോട്ട്', hNext:'അടുത്തത് →', hSkip:'ഒഴിവാക്കുക ✕', fdK:'KSFE FD പലിശ %', fdB:'ബാങ്ക് FD / RD പലിശ %', loanR:'ബാങ്ക് ലോൺ പലിശ %', maxd:'പരമാവധി ലേലക്കിഴിവ് %', comm:'കമ്മീഷൻ %',
+  adv:'പലിശ നിരക്കുകൾ മാറ്റാം', gstL:'കമ്മീഷനിലെ GST %', exRates:'ഇവ ഉദാഹരണ നിരക്കുകളാണ്. നിങ്ങളുടെ കുറിയിലോ ബാങ്കിലോ വേറെയാണെങ്കിൽ മാറ്റുക.', hlpBtn:'🧭 സഹായിയോടൊപ്പം തുടങ്ങാം', hlpBtnS:'3 ചെറിയ ചോദ്യങ്ങൾ · നിരക്കുകൾ മാറ്റാം', h1T:'നിങ്ങളുടെ കുറി', h1S:'പാസ്ബുക്ക് നോക്കി ഇടാം. അറിയില്ലെങ്കിൽ ഇപ്പോഴുള്ളത് മതി.', h2T:'നിരക്കുകൾ', hReset:'↺ ഉദാഹരണ നിരക്കുകളിലേക്ക് മടങ്ങുക', h3T:'എന്താണ് അറിയേണ്ടത്?', h3S:'ഒന്ന് തിരഞ്ഞെടുക്കൂ. പിന്നീട് മാറ്റാം.', hBack:'← പിന്നോട്ട്', hNext:'അടുത്തത് →', hSkip:'ഒഴിവാക്കുക ✕', fdK:'KSFE FD പലിശ % (ബാക്കി അടവിന്റെ അത്ര തുകയ്ക്ക്)', fdK2:'KSFE FD പലിശ % (ബാക്കി തുകയ്ക്ക്)', fdB:'ബാങ്ക് FD / RD പലിശ %', loanR:'ബാങ്ക് ലോൺ പലിശ %', maxd:'പരമാവധി ലേലക്കിഴിവ് %', comm:'കമ്മീഷൻ %',
   s2:'എന്താണ് ലാഭം? ഒന്ന് തിരഞ്ഞെടുക്കൂ',
   gLoan:'കുറി vs ലോൺ', gLoanS:'പണം ഉടനെ വേണമെങ്കിൽ', gSave:'കുറി + FD', gSaveS:'അടവ് മുഴുവൻ സ്വന്തമായി', gTrick:'കുറി + FD പലിശ', gTrickS:'FD പലിശ കൊണ്ട് അടവ്',
-  try:'വേറെ മാസം നോക്കാം', bidS:'ആ മാസത്തെ ലേലക്കിഴിവ് മാറ്റാം', drawNote:'നറുക്കിൽ മാസം തിരഞ്ഞെടുക്കാൻ പറ്റില്ല. ഓരോ മാസവും കിട്ടിയാൽ എന്താകും എന്ന് നോക്കാം.',
+  try:'വേറെ മാസം നോക്കാം', bidS:'ആ മാസം നിങ്ങൾ കൊടുക്കുന്ന ലേലക്കിഴിവ് (അറിയാമെങ്കിൽ മാറ്റുക)', drawNote:'നറുക്കിൽ മാസം തിരഞ്ഞെടുക്കാൻ പറ്റില്ല. ഓരോ മാസവും കിട്ടിയാൽ എന്താകും എന്ന് നോക്കാം.',
   s4:'എല്ലാ മാസവും: മുഴുവൻ പട്ടിക', lg1:'കുറി ലാഭം', lg2:'കുറി നഷ്ടം',
   tblS:'മുഴുവൻ പട്ടിക കാണുക', thM:'മാസം', thB:'ലേലക്കിഴിവ്', thG:'കിട്ടുന്നത്',
   howT:'കുറി എങ്ങനെ?',
@@ -420,7 +421,7 @@ ml:{
   disc:'ഇത് ഏകദേശ കണക്ക് മാത്രം. വരും മാസങ്ങളിലെ ലേലം ഊഹം മാത്രമാണ്. കുറി എടുക്കാൻ ജാമ്യം വേണം (KSFE FD ജാമ്യമായി എടുക്കുമോ എന്ന് ബ്രാഞ്ചിൽ ചോദിക്കുക); കമ്മീഷന് GST ഉണ്ടാകാം; പലിശ നിരക്കുകൾ മാറാം. നിങ്ങൾ നൽകുന്ന വിവരങ്ങൾ ഈ പേജിന് പുറത്ത് പോകില്ല. ഈ ടൂളിന് KSFE-യുമായോ മറ്റേതെങ്കിലും ചിട്ടി സ്ഥാപനവുമായോ ബന്ധമില്ല; നിരക്കുകളും നിയമങ്ങളും നിങ്ങളുടെ ബ്രാഞ്ചിൽ ഉറപ്പാക്കുക. ഇത് സാമ്പത്തിക ഉപദേശമല്ല.',
   month:k=>`${k}-ാം മാസം`, now_:' (ഇപ്പോൾ)', last:' (അവസാനം)', best:'⭐ ഏറ്റവും നല്ല മാസം', notBest:k=>`⭐ ഏറ്റവും നല്ലത്: ${k}-ാം മാസം`,
   callIn:k=>`${k}-ാം മാസം വിളിക്കുക`, ifGet:k=>`${k}-ാം മാസം കിട്ടിയാൽ`, ifCall:k=>`${k}-ാം മാസം വിളിച്ചാൽ`,
-  beLow:(x,p)=>`👉 ലേലക്കിഴിവ് ${x} (${p}%)-ൽ താഴെയാണെങ്കിൽ മാത്രം വിളിക്കുക`, waitEnd:'അവസാനം വരെ കാത്തിരിക്കൂ',
+  beLow:(x,p)=>`👉 ലേലക്കിഴിവ് ${x} (${p}%)-ൽ താഴെയാണെങ്കിൽ മാത്രം വിളിക്കുക`, beLowF:(x,p)=>`👉 കിഴിവ് ${x} (${p}%)-ൽ താഴെയാണെങ്കിൽ മാത്രം കുറി ബാങ്ക് FD-യെക്കാൾ ലാഭം`, beNeverF:'👉 ഈ മാസം ഏത് കിഴിവിലും ബാങ്ക് FD ആണ് ലാഭം', beAlwaysF:'👉 പരമാവധി കിഴിവിലും കുറി ആണ് FD-യെക്കാൾ ലാഭം', waitEnd:'അവസാനം വരെ കാത്തിരിക്കൂ',
   baseNow:'(ഇപ്പോൾ വിളിച്ചാൽ)', baseBest:'(ഏറ്റവും നല്ല മാസം)', baseGet:'(ഇപ്പോൾ കിട്ടിയാൽ)', share:'WhatsApp-ൽ അയക്കുക', share2:'WhatsApp-ൽ അയക്കാം', shMine:(i,n,m)=>`🪙 എന്റെ കുറി: മാസ അടവ് ${i} · ${n} മാസം${m>1?` · ഇപ്പോൾ ${m}-ാം മാസം`:''}`, shEst:'(ഏകദേശ കണക്ക് മാത്രം)', shAsk:'നിങ്ങളുടെ കുറി ഏത് മാസം വിളിക്കണം? ഫ്രീ ആയി നോക്കൂ 👇', shInv:'🪙 കുറി ഏത് മാസം വിളിക്കണം? ബാങ്ക് ലോണിനെക്കാൾ ലാഭമാണോ, FD-യെക്കാൾ നഷ്ടമാണോ എന്ന് രൂപയിൽ തന്നെ നോക്കാം.', shFree:'ഫ്രീ ആണ്, ലോഗിൻ വേണ്ട 👇',
   hNow:(k,g,x,p,e,res)=>`👉 ഇപ്പോൾ (${k}-ാം മാസം) വിളിച്ചാൽ ${g} കിട്ടും. ലോണിനെക്കാൾ ലാഭമാകാൻ ലേലക്കിഴിവ് ${x} (${p}%)-ൽ താഴെ ആകണം. സാധാരണ കിഴിവ് ${e} ആയതിനാൽ ${res}.`,
   resK:x=>`ഇപ്പോൾ കുറി വിളിച്ചാൽ ${x} ലാഭം`, resL:x=>`ഇപ്പോൾ ബാങ്ക് ലോൺ എടുത്താൽ ${x} ലാഭം`,
@@ -459,10 +460,10 @@ en:{
   type:'Who runs it?', ksfe:'KSFE / company', ksfeS:'5% commission', local:'Local kuri', localS:'no commission',
   heat:'How big are the auction discounts?', hot:'High', hotS:'busy', normal:'Normal', cool:'Low', coolS:'quiet',
   paidL:'Or: amount you paid this month (if you know)', paidNo:'No dividend in month 1; use this from month 2.', paidOk:(d,p,m)=>`So the auction discount in month ${m} was about ${d} (${p}% of the pot). The other months are matched to it.`, paidBad:'The amount can\'t be more than the instalment.', now:'Which month is it now?', nowH:'Put 1 if the kuri is new.', moS:'months', moN:'th month', follow:'Follow for more free AI tools', madeBy:'A free tool by AI Tech Vartha', madeS:'AI, tech & cyber news and tips, in simple Malayalam',
-  adv:'Change interest rates', gstL:'GST on commission %', exRates:'These are example rates. Change any that are different for your chitty or bank.', hlpBtn:'🧭 Start with the helper', hlpBtnS:'3 quick questions · edit the rates', h1T:'Your chitty', h1S:'Check your passbook. If unsure, keep what is filled in.', h2T:'Rates', hReset:'↺ Back to the example rates', h3T:'What do you want to know?', h3S:'Pick one. You can switch later.', hBack:'← Back', hNext:'Next →', hSkip:'Skip ✕', fdK:'KSFE FD interest %', fdB:'Bank FD / RD interest %', loanR:'Bank loan interest %', maxd:'Max auction discount %', comm:'Commission %',
+  adv:'Change interest rates', gstL:'GST on commission %', exRates:'These are example rates. Change any that are different for your chitty or bank.', hlpBtn:'🧭 Start with the helper', hlpBtnS:'3 quick questions · edit the rates', h1T:'Your chitty', h1S:'Check your passbook. If unsure, keep what is filled in.', h2T:'Rates', hReset:'↺ Back to the example rates', h3T:'What do you want to know?', h3S:'Pick one. You can switch later.', hBack:'← Back', hNext:'Next →', hSkip:'Skip ✕', fdK:'KSFE FD interest % (up to the instalments still to pay)', fdK2:'KSFE FD interest % (on the rest)', fdB:'Bank FD / RD interest %', loanR:'Bank loan interest %', maxd:'Max auction discount %', comm:'Commission %',
   s2:'Which is better? Pick one',
   gLoan:'Chitty vs loan', gLoanS:'if you need money now', gSave:'Chitty + FD', gSaveS:'you pay every instalment', gTrick:'Chitty + FD interest', gTrickS:'FD interest pays your instalment',
-  try:'Try another month', bidS:'Change that month\'s auction discount', drawNote:'In a draw you can\'t choose the month. See what happens if you get it in each month.',
+  try:'Try another month', bidS:'Your auction discount that month (change it if you know)', drawNote:'In a draw you can\'t choose the month. See what happens if you get it in each month.',
   s4:'All months: full table', lg1:'Chitty wins', lg2:'Chitty loses',
   tblS:'See the full table', thM:'Month', thB:'Discount', thG:'You get',
   howT:'How a kuri works',
@@ -473,7 +474,7 @@ en:{
   disc:'Estimates only. Future auction discounts are guesses. Taking a kuri needs security (ask your branch if a KSFE FD can be the security); commission may have GST; interest rates change. Nothing you type leaves this page. This tool is not affiliated with KSFE or any chitty company; confirm rates and rules with your branch. Not financial advice.',
   month:k=>`Month ${k}`, now_:' (now)', last:' (last)', best:'⭐ Best month', notBest:k=>`⭐ Best: month ${k}`,
   callIn:k=>`Call in month ${k}`, ifGet:k=>`If you get it in month ${k}`, ifCall:k=>`If you call in month ${k}`,
-  beLow:(x,p)=>`👉 Call only if the discount is below ${x} (${p}%)`, waitEnd:'Wait till the end',
+  beLow:(x,p)=>`👉 Call only if the discount is below ${x} (${p}%)`, beLowF:(x,p)=>`👉 The chitty beats a bank FD only if the discount is below ${x} (${p}%)`, beNeverF:'👉 This month a bank FD wins at any discount', beAlwaysF:'👉 The chitty beats a bank FD even at the max discount', waitEnd:'Wait till the end',
   baseNow:'(if you call now)', baseBest:'(best month)', baseGet:'(if you get it now)', share:'Send on WhatsApp', share2:'Send this on WhatsApp', shMine:(i,n,m)=>`🪙 My chitty: ${i} a month · ${n} months${m>1?` · now month ${m}`:''}`, shEst:'(an estimate only)', shAsk:'Which month should you call YOUR chitty? Check free 👇', shInv:'🪙 Which month should you call your chitty? See in rupees whether it beats a bank loan or loses to an FD.', shFree:'Free, no login 👇',
   hNow:(k,g,x,p,e,res)=>`👉 Call now (month ${k}) and you get ${g}. To beat a bank loan the discount must be below ${x} (${p}%). The usual discount is ${e}, so ${res}.`,
   resK:x=>`calling the chitty now saves you ${x}`, resL:x=>`a bank loan now saves you ${x}`,
@@ -540,7 +541,7 @@ function quick(box, input){
   });
 }
 quick('instQ','inst'); quick('monthsQ','months');
-['inst','months','maxd','comm','gst','fdK','fdB','loan','now','paid'].forEach(id => $(id).addEventListener('input', ()=>{ S.bidTouched=false; S.cmTouched=false; render(); }));
+['inst','months','maxd','comm','gst','fdK','fdK2','fdB','loan','now','paid'].forEach(id => $(id).addEventListener('input', ()=>{ S.bidTouched=false; S.cmTouched=false; render(); }));
 $('cm').addEventListener('input', ()=>{ S.bidTouched=false; S.cmTouched=true; render(); });
 $('bid').addEventListener('input', ()=>{ S.bidTouched=true; render(); });
 function pickMonth(k){ $('cm').value = k; S.bidTouched=false; S.cmTouched=true; render(); }
@@ -564,12 +565,15 @@ function schedule(N, sala, maxD, comm, heat, mode){
 }
 
 // Everything about taking the chitty in month k
-function outcome(k, N, inst, sala, disc, commAmt, fdK, fdB, loanR){
+function outcome(k, N, inst, sala, disc, commAmt, fdHi, fdLo, fdB, loanR){
   const pays = [];
   for(let m=1;m<=N;m++) pays.push(inst - (m>1 ? Math.max(0, disc[m-2]-commAmt)/N : 0)); // dividend from last month's auction
   const gst = (+(document.getElementById('gst')?.value ?? 18) || 0)/100*commAmt; // GST on the commission, taken from the prize (18% in real KSFE ledgers); editable
   const get = sala - disc[k-1] - gst, paid = pays.reduce((a,b)=>a+b,0);
   const before = pays.slice(0,k).reduce((a,b)=>a+b,0), after = paid - before, n = N-k;
+  // KSFE prize-money deposit (2026-11-20, real chitty in reel comments): higher rate on the part up to the future liability
+  // (instalments still to pay), lower rate on the rest → one blended rate for this month's prize
+  const futLiab = n*inst, hiPart = Math.min(get, futLiab), fdK = get>0 ? (hiPart*fdHi + (get-hiPart)*fdLo)/get : fdHi;
   const mK = Math.pow(1+fdK,1/12)-1, mB = Math.pow(1+fdB,1/12)-1;
   const fv = (arr, start) => arr.reduce((s,p,i)=> s + p*Math.pow(1+mB, N-1-(start+i)), 0); // bank FD/RD value at month N
 
@@ -596,7 +600,7 @@ function outcome(k, N, inst, sala, disc, commAmt, fdK, fdB, loanR){
   const trickBack = get + surplus, trickFd = fv(pocketStream, 0), trickGain = trickBack - trickFd;
   const avgLater = n>0 ? later.reduce((a,b)=>a+b,0)/n : 0;
 
-  return { k, n, get, paid, before, after, endGet, emi, bankInt, kuriCost, loanGain, avgAfter,
+  return { fdK, k, n, get, paid, before, after, endGet, emi, bankInt, kuriCost, loanGain, avgAfter,
     kuriEnd, fdEnd, saveGain, lostInt, kuriRate, pays, pocketStream, intM, pocket, trickBack, trickFd, trickGain, avgLater };
 }
 
@@ -611,7 +615,7 @@ function vsTable(cols, rows){ // rows: [label, a, b, higherWins?]
 function render(){
   const inst = +$('inst').value||0, N = Math.min(120, Math.max(3, Math.round(+$('months').value||0)));
   const sala = inst*N, maxD = (+$('maxd').value||0)/100, comm = (+$('comm').value||0)/100;
-  const fdK = (+$('fdK').value||0)/100, fdB = (+$('fdB').value||0)/100, loanR = (+$('loan').value||0)/100, draw = S.mode==='draw';
+  const fdK = (+$('fdK').value||0)/100, fdK2 = (+$('fdK2').value||0)/100, fdB = (+$('fdB').value||0)/100, loanR = (+$('loan').value||0)/100, draw = S.mode==='draw';
   const now = NOW = Math.min(N, Math.max(1, Math.round(+$('now').value||1)));
   document.querySelectorAll('#instQ .q').forEach(b=>b.classList.toggle('on', +b.dataset.v===inst));
   document.querySelectorAll('#monthsQ .q').forEach(b=>b.classList.toggle('on', +b.dataset.v===N));
@@ -634,7 +638,7 @@ function render(){
   }
   $('paidHint').textContent = paidMsg;
   $('inSum').textContent = `${inr(inst)} × ${N} · ${t(S.mode==='draw'?'draw':'auction')} · ${t(S.type==='ksfe'?'ksfe':'local')} · ${t('month', now)} ✏️`;
-  const out = (k, d=disc) => outcome(k, N, inst, sala, d, comm*sala, fdK, fdB, loanR);
+  const out = (k, d=disc) => outcome(k, N, inst, sala, d, comm*sala, fdK, fdK2, fdB, loanR);
   const rows = ROWS = disc.map((_,i)=> out(i+1));
   const ahead = rows.filter(r=>r.k>=now);
   const bestOf = key => ahead.reduce((x,y)=> y[key] > x[key] ? y : x);
@@ -680,7 +684,8 @@ function render(){
     return Math.floor(a/100)*100;
   };
   let badge = '';
-  if(g==='save' && !draw) badge = cm===B.k ? t('best') : t('notBest', B.k);
+  if(g==='save' && !draw){ badge = cm===B.k ? t('best') : t('notBest', B.k);
+    if(cm<N){ const be = breakEven(cm, 'saveGain'); badge += ' · ' + (be==='never' ? t('beNeverF') : be==='always' ? t('beAlwaysF') : t('beLowF', inr(be), (be/sala*100).toFixed(1))); } }
   else if(g!=='save' && !draw && cm<N){
     const be = breakEven(cm, KEY(g));
     badge = be==='never' ? t('beNever') : be==='always' ? t('beAlways') : t('beLow', inr(be), (be/sala*100).toFixed(1));
@@ -811,8 +816,8 @@ $('chart').addEventListener('pointermove', e => { if(dragging) pickAt(e); });
 
 addEventListener('resize', ()=>render());
 // ---------- start helper (first visit + button) ----------
-const HD = { maxd:30, comm:5, gst:18, loan:16, fdK:7.7, fdB:6.5 }; // example rates
-const HMAP = { hMaxd:'maxd', hComm:'comm', hGst:'gst', hLoan:'loan', hFdK:'fdK', hFdB:'fdB' };
+const HD = { maxd:30, comm:5, gst:18, loan:16, fdK:8.5, fdK2:7.5, fdB:6.5 }; // example rates
+const HMAP = { hMaxd:'maxd', hComm:'comm', hGst:'gst', hLoan:'loan', hFdK:'fdK', hFdK2:'fdK2', hFdB:'fdB' };
 let hStep = 1, hType = 'ksfe', hMode = 'auction';
 function hSeg(id, v){ [...$(id).children].forEach(c => c.classList.toggle('on', c.dataset.v===v)); }
 function hShow(n){ hStep = n; document.querySelectorAll('#hlp .hstep').forEach(el => el.classList.toggle('hide', +el.dataset.s !== n));
