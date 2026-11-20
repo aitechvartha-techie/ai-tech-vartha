@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="ml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kuri Calculator</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="apple-touch-icon" href="assets/logo.png">
+<meta name="theme-color" content="#0f766e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Malayalam:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1ea; --card:#ffffff; --ink:#1b1915; --muted:#6b655c; --line:#e8e2d8; --field:#f7f4ee;
+  --brand:#0f766e; --on-brand:#fff; --brand-soft:#dcf1ed;
+  --loan:#c2410c; --loan-soft:#fdeadf; --save:#15803d; --save-soft:#def4e5; --bad:#b91c1c; --bad-soft:#fde3e3;
+  --fd:#64748b; --gold:#b45309; --gold-soft:#fdf0d5;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 28px rgba(31,27,20,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12110e; --card:#1d1b17; --ink:#f2eee7; --muted:#a59e92; --line:#332f29; --field:#171612;
+    --brand:#2dd4bf; --on-brand:#06201c; --brand-soft:#11352f;
+    --loan:#fb923c; --loan-soft:#3a2214; --save:#4ade80; --save-soft:#13301d; --bad:#f87171; --bad-soft:#381616;
+    --fd:#94a3b8; --gold:#fbbf24; --gold-soft:#33270f; --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12110e; --card:#1d1b17; --ink:#f2eee7; --muted:#a59e92; --line:#332f29; --field:#171612;
+  --brand:#2dd4bf; --on-brand:#06201c; --brand-soft:#11352f;
+  --loan:#fb923c; --loan-soft:#3a2214; --save:#4ade80; --save-soft:#13301d; --bad:#f87171; --bad-soft:#381616;
+  --fd:#94a3b8; --gold:#fbbf24; --gold-soft:#33270f; --shadow:none;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans Malayalam",Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+html[lang=en] body{font-family:Inter,"Noto Sans Malayalam",system-ui,sans-serif;font-size:15px}
+input,.amt,td,.big{font-family:Inter,"Noto Sans Malayalam",sans-serif}
+.hero{background:linear-gradient(135deg,#0f766e 0%,#115e59 55%,#134e4a 100%);color:#fff;padding:20px 16px 64px}
+.hero .in{max-width:760px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hero .tag{font-size:12px;font-weight:600;background:rgba(255,255,255,.14);padding:4px 10px;border-radius:999px}
+.lang{display:flex;background:rgba(255,255,255,.14);border-radius:999px;padding:3px}
+.lang button{border:0;background:none;color:#fff;font:600 13px "Noto Sans Malayalam",Inter,sans-serif;padding:5px 12px;border-radius:999px;cursor:pointer}
+.lang button.on{background:#fff;color:#0f766e}
+.hero h1{font-size:30px;line-height:1.2;margin:14px 0 0;font-weight:800}
+.hero p{margin:6px 0 0;opacity:.92}
+.wrap{max-width:760px;margin:-44px auto 0;padding:0 16px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card h2{font-size:17px;margin:0 0 14px;font-weight:700;display:flex;align-items:center;gap:10px}
+.card h2 .n{flex:0 0 auto;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--brand);color:var(--on-brand);font:800 13px Inter,sans-serif}
+.lab{display:block;font-size:14px;color:var(--muted);margin-bottom:6px;font-weight:500}
+.field{margin-bottom:18px}
+input[type=number]{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--field);color:var(--ink);font-weight:700;font-size:18px}
+input:focus{outline:2px solid var(--brand);outline-offset:1px}
+.qs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.hres{margin-top:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:12px 14px;font-weight:600;line-height:1.45}
+.hres div+div{margin-top:6px}
+.share{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:#25d366;color:#06301a;font-weight:700;font-size:14px;padding:7px 14px;border-radius:999px;text-decoration:none}
+.tile .base{font-size:11.5px;color:var(--muted);font-weight:400}
+.qs::-webkit-scrollbar{display:none}
+.q{flex:0 0 auto;border:1px solid var(--line);background:var(--field);color:var(--ink);padding:8px 13px;border-radius:999px;font:600 14px Inter,sans-serif;cursor:pointer}
+.q.on{background:var(--brand-soft);border-color:var(--brand);color:var(--brand)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--field);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
+.seg button{border:0;background:none;color:var(--ink);padding:10px 6px;border-radius:10px;font:600 15px "Noto Sans Malayalam",Inter,sans-serif;cursor:pointer;line-height:1.25}
+.seg button small{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:3px}
+.seg button.on{background:var(--brand);color:var(--on-brand);box-shadow:0 2px 8px rgba(15,118,110,.25)}
+.seg button.on small{color:inherit;opacity:.88}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+/* three comparison tiles = tabs */
+.verdict .mood{display:block;width:100%;max-height:200px;object-fit:cover;object-position:center 30%;border-radius:10px;margin:0 0 10px}
+.rate{margin:10px 0 2px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.rbig{font-size:30px;font-weight:800;line-height:1}.rbig small{font-size:14px;font-weight:600;color:var(--muted)}
+.rbig.pos{color:var(--save)}.rbig.neg{color:var(--bad)}.rsub{font-size:12.5px;color:var(--muted);flex-basis:100%}
+.sticky{position:fixed;left:8px;right:8px;bottom:8px;z-index:20;background:var(--card);border:1px solid var(--line);box-shadow:0 6px 24px #0003;border-radius:14px;padding:10px 12px;font-size:13.5px;line-height:1.35;cursor:pointer}
+.sticky .pos{color:var(--save);font-weight:800}.sticky .neg{color:var(--bad);font-weight:800}
+.lost{background:#fff6d6;border-radius:10px;padding:8px 12px;margin:8px 0;font-size:14px}
+.fullck{display:flex;gap:10px;align-items:center;background:#fff6d6;border:2px solid #e9b949;border-radius:12px;padding:10px 12px;margin:4px 0 12px;font-weight:700;cursor:pointer}.fullck input{width:22px;height:22px;flex:none}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:12px;text-align:left;cursor:pointer;font:inherit;display:flex;flex-direction:column;gap:2px}
+.tile .e{font-size:24px;line-height:1}
+.tile b{font-size:16px;margin-top:6px;line-height:1.25}
+.tile small{font-size:12.5px;color:var(--muted);line-height:1.3}
+.tile .r{margin-top:8px;font-size:13.5px;font-weight:700;line-height:1.3}
+.tile.on{border-color:var(--brand);background:var(--brand-soft)}
+.detail{border-radius:16px;padding:18px;margin-top:14px;background:var(--field);border:1px solid var(--line)}
+.detail .k{font-size:14px;font-weight:600;color:var(--muted)}
+.detail .big{font-size:30px;font-weight:800;line-height:1.15;margin-top:4px;color:var(--brand)}
+.badge{display:inline-block;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--gold-soft);color:var(--gold);margin-top:6px}
+.drawnote{font-size:13.5px;background:var(--gold-soft);color:var(--gold);border-radius:10px;padding:8px 12px;margin-bottom:10px}
+.slider{margin-top:14px}
+.slider .row{display:flex;justify-content:space-between;align-items:baseline}
+input[type=range]{width:100%;accent-color:var(--brand);height:30px}
+.vs{width:100%;border-collapse:separate;border-spacing:0;margin-top:14px;background:var(--card);border-radius:14px;overflow:hidden;font-size:15px}
+.vs th,.vs td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:normal}
+.vs th:first-child,.vs td:first-child{text-align:left;color:var(--muted);font-weight:500;font-size:14px;font-family:inherit}
+.vs thead th{font-size:14px;font-weight:700;color:var(--ink);background:var(--card)}
+.vs thead th.us{color:var(--brand)}
+.vs tr:last-child td{border-bottom:0;font-weight:800;font-size:16px}
+.vs td.win{background:var(--save-soft);color:var(--save)}
+.verdict{margin-top:12px;border-radius:12px;padding:12px 14px;font-weight:700;font-size:16px}
+.verdict.good{background:var(--save-soft);color:var(--save)} .verdict.bad{background:var(--bad-soft);color:var(--bad)}
+.steps4{display:grid;gap:8px;margin-top:14px;counter-reset:s}
+.steps4 div{background:var(--card);border-radius:12px;padding:10px 12px 10px 44px;position:relative;line-height:1.4}
+.steps4 div::before{counter-increment:s;content:counter(s);position:absolute;left:12px;top:10px;width:22px;height:22px;border-radius:50%;background:var(--brand);color:var(--on-brand);font:800 12px/22px Inter,sans-serif;text-align:center}
+.steps4 b{font-family:Inter,"Noto Sans Malayalam",sans-serif}
+.small{font-size:13px;color:var(--muted);margin-top:8px}
+.mini{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.mini span{font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.mini span.bad{background:var(--bad-soft);border-color:transparent;color:var(--bad);font-weight:600}
+.hint{font-size:13px;color:var(--muted);margin-top:4px}
+.hint button{border:0;background:none;color:var(--brand);font-family:inherit;font-weight:600;font-size:13px;padding:0;cursor:pointer;text-decoration:underline}
+.chart{width:100%;height:170px;display:block;cursor:ew-resize;touch-action:none;margin-top:6px}
+.chartnote{margin:2px 0 0;font-size:12.5px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+details.more>summary{cursor:pointer;color:var(--brand);font-weight:600;font-size:15px;margin-top:6px;list-style:none}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"▸ "} details.more[open]>summary::before{content:"▾ "}
+.tbl table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;font-variant-numeric:tabular-nums}
+.tbl th,.tbl td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl th{color:var(--muted);font-weight:500;font-size:12.5px;position:sticky;top:0;z-index:1;background:var(--card)}
+.tbl tr.sel td{background:var(--brand-soft)} .tbl tr.past td{opacity:.4} .tbl tbody tr{cursor:pointer}
+.tbl{max-height:380px;overflow:auto;margin-top:10px}
+.pos{color:var(--save)} .neg{color:var(--bad)}
+.note{font-size:13.5px;color:var(--muted)}
+.steps{display:grid;gap:10px}
+.step{background:var(--field);border-radius:14px;padding:12px;display:grid;grid-template-columns:38px 1fr;column-gap:8px}
+.step .e{font-size:24px;grid-row:span 2} .step b{display:block}
+.adv{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.adv label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
+.hide{display:none!important}
+details.sec>summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary h2{display:flex;align-items:center;gap:8px;margin:0}
+details.sec>summary h2::after{content:'▾';margin-left:auto;font-size:18px;opacity:.6;transition:transform .2s}
+details.sec[open]>summary h2::after{transform:rotate(180deg)}
+details.sec[open]>summary{margin-bottom:12px}
+.sum{font-size:13.5px;color:var(--muted);font-weight:600}
+details.sec[open] .sum{display:none}
+@media (max-width:600px){
+  .two,.adv{grid-template-columns:1fr} .two{gap:0}
+  .hero h1{font-size:26px}
+  .detail{padding:14px}
+  .detail .big{font-size:26px}
+  .tiles{gap:6px} .tile{padding:10px 8px;border-radius:14px} .tile b{font-size:14px} .tile small{font-size:11.5px} .tile .r{font-size:12.5px}
+  .vs th,.vs td{padding:9px 8px} .vs{font-size:14px}
+  .hide-sm{display:none}
+  .hero{padding:12px 14px 52px} .hero p,.hero .hres{display:none} .hero h1{font-size:21px;margin:6px 0 0} .wrap{margin-top:-40px;padding:0 12px 28px}
+  .card{padding:12px;margin-bottom:10px;border-radius:14px}
+  .field{margin-bottom:10px} .lab{font-size:13px;margin-bottom:4px}
+  input[type=number]{padding:8px 12px;font-size:16px;border-radius:10px}
+  .qs{margin-top:6px;gap:5px} .q{padding:5px 10px;font-size:13px}
+  .seg{padding:3px;border-radius:12px} .seg button{padding:7px 4px;font-size:13.5px}
+  .seg small{display:none}
+  .detail .big{font-size:22px} .detail .k{font-size:13px}
+  .verdict .mood{max-height:150px}
+  .phonemore{margin-top:10px}
+  .tile small,.tile .base{display:none} .tile .e{font-size:16px;display:inline} .tile{padding:7px 5px;text-align:center} .tile b{font-size:12.5px;display:block;margin-top:2px} .tile .r{font-size:11px;margin-top:3px;display:block}
+  body{padding-bottom:64px} .rbig{font-size:26px}
+  .chart{height:140px}
+}
+
+/* brand + polish (2026-11-20) */
+.hero{position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px 220px at 92% -10%,rgba(94,234,212,.28),transparent 70%),radial-gradient(300px 180px at 0% 110%,rgba(250,204,21,.14),transparent 70%)}
+.hero .in{position:relative}
+.wrap{position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;min-width:0}
+.brand img{width:36px;height:36px;border-radius:10px;background:#fff;padding:2px;box-shadow:0 2px 10px rgba(0,0,0,.18);flex:none}
+.brand>span{display:flex;flex-direction:column;line-height:1.15}
+.brand b{font:800 15px Inter,sans-serif;letter-spacing:.2px}
+.brand .tag{background:none;padding:0;font-size:11.5px;opacity:.85;font-weight:600}
+.affix{position:relative}
+.affix .ax{position:absolute;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700;pointer-events:none;font-size:15px}
+.affix.pre .ax{left:14px;font-size:18px} .affix.pre input{padding-left:32px}
+.affix.suf .ax{right:14px;font-weight:600} .affix.suf input{padding-right:110px}
+html[lang=en] .affix.suf input{padding-right:96px}
+.tile{position:relative;transition:border-color .15s,background .15s,transform .15s,box-shadow .15s}
+.tile:hover{border-color:var(--brand)}
+.tile.on{box-shadow:0 4px 14px rgba(15,118,110,.18)}
+.tile.on::after{content:"✓";position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--brand);color:var(--on-brand);font:800 12px/20px Inter,sans-serif;text-align:center}
+.sticky{border-left:4px solid var(--brand)}
+.q{transition:background .15s,border-color .15s}
+.q:hover{border-color:var(--brand)}
+.hlpbtn{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;margin:0 0 10px;padding:10px 14px;border:1.5px solid var(--brand);background:var(--card);box-shadow:var(--shadow);color:var(--brand);border-radius:12px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer;text-align:left}
+.hlpbtn small{font-weight:500;font-size:12.5px;color:var(--muted)}
+.hlp{position:fixed;inset:0;z-index:50;background:rgba(10,20,18,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.hbox{background:var(--card);color:var(--ink);width:100%;max-width:460px;max-height:calc(100dvh - 32px);overflow:auto;border-radius:20px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.hhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.dots{display:flex;gap:6px}.dots i{width:22px;height:5px;border-radius:3px;background:var(--line)}.dots i.on{background:var(--brand)}
+.hx{border:0;background:none;color:var(--muted);font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;padding:4px}
+.hbox h3{margin:4px 0 2px;font-size:20px}.hs{margin:0 0 12px;color:var(--muted);font-size:13.5px}
+.hbox .lab{margin-top:10px}
+.hrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hrow>div{display:flex;flex-direction:column;justify-content:flex-end}
+.hbox .seg button{padding:8px 4px;font-size:14px}
+.hrates{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hrates label{display:flex;align-items:flex-end;font-size:12.5px;color:var(--muted);margin-bottom:4px;line-height:1.3;min-height:2.6em}
+.hlink{border:0;background:none;color:var(--brand);font-family:inherit;font-weight:600;font-size:13.5px;padding:10px 0 0;cursor:pointer}
+.hgoals{display:grid;gap:8px}
+.hgoals button{display:grid;grid-template-columns:34px 1fr;text-align:left;align-items:center;column-gap:8px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:12px;font:inherit;cursor:pointer}
+.hgoals button span{grid-row:span 2;font-size:24px}.hgoals button b{font-size:15.5px}.hgoals button small{color:var(--muted);font-size:12.5px}
+.hgoals button:hover,.hgoals button.on{border-color:var(--brand);background:var(--brand-soft)}
+.hnav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+.hback,.hnext{border:0;border-radius:999px;padding:10px 18px;font-family:inherit;font-weight:700;font-size:14.5px;cursor:pointer}
+.hback{background:var(--field);color:var(--ink)}.hnext{background:var(--brand);color:var(--on-brand);margin-left:auto}
+@media (max-width:600px){ .hlp{align-items:flex-end;padding:0} .hbox{border-radius:20px 20px 0 0;max-height:92dvh;padding:16px 14px calc(16px + env(safe-area-inset-bottom))} .hbox h3{font-size:18px} }
+.vshare{display:flex;justify-content:center;margin-top:10px;font-size:14.5px}
+.foot{display:flex;align-items:center;gap:12px;margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow)}
+.foot img{width:44px;height:44px;border-radius:12px;flex:none}
+.foot .ft{display:flex;flex-direction:column;line-height:1.3;min-width:0;flex:1}
+.foot .ft b{font-size:14.5px}.foot .ft span{font-size:12.5px;color:var(--muted)}
+.foot{flex-wrap:wrap}
+.soc{flex-basis:100%;border-top:1px solid var(--line);padding-top:10px}
+.soct{display:block;font-size:12.5px;color:var(--muted);font-weight:600;margin-bottom:8px}
+.socb{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.socb a{display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;font:700 13px Inter,sans-serif;color:#fff;padding:9px 6px;border-radius:999px}
+.socb .ig{background:linear-gradient(45deg,#f58529,#dd2a7b 50%,#8134af)} .socb .yt{background:#e62117} .socb .fb{background:#1877f2}
+@media (max-width:600px){
+  .brand img{width:30px;height:30px;border-radius:8px} .brand b{font-size:13.5px} .brand .tag{font-size:10.5px}
+  .tile.on::after{top:4px;right:4px;width:16px;height:16px;font-size:10px;line-height:16px}
+  .affix.pre .ax{font-size:16px;left:12px} .affix.pre input{padding-left:28px}
+  .socb a{font-size:12px;padding:9px 4px}
+}
+</style>
+</head>
+<body>
+<div id="sticky" class="sticky hide"></div>
+<div class="hero"><div class="in">
+  <div class="top"><a class="brand" href="https://www.instagram.com/ai_tech_vartha/" target="_blank" rel="noopener"><img src="assets/logo.png" alt="AI Tech Vartha logo" width="36" height="36"><span><b>AI Tech Vartha</b><span class="tag"><span data-t="tag"></span><span class="hide-sm" data-t="tag2"></span></span></span></a>
+    <div class="lang" id="lang"><button data-v="ml">മലയാളം</button><button data-v="en">English</button></div></div>
+  <h1 data-t="title"></h1>
+  <p data-t="sub"></p>
+  <div class="hres" id="hres"></div>
+</div></div>
+
+<div class="hlp hide" id="hlp" role="dialog" aria-modal="true" aria-labelledby="hlpTitle"><div class="hbox">
+  <div class="hhead"><div class="dots" id="hDots"><i></i><i></i><i></i></div><button type="button" class="hx" id="hSkip" data-t="hSkip"></button></div>
+  <div class="hstep" data-s="1">
+    <h3 id="hlpTitle" data-t="h1T"></h3><p class="hs" data-t="h1S"></p>
+    <label class="lab" for="hInst" data-t="inst"></label><div class="affix pre"><span class="ax">₹</span><input id="hInst" type="number" min="100" step="100" inputmode="numeric"></div>
+    <div class="qs" id="hInstQ"><button type="button" class="q" data-v="2000">₹2,000</button><button type="button" class="q" data-v="5000">₹5,000</button><button type="button" class="q" data-v="10000">₹10,000</button><button type="button" class="q" data-v="25000">₹25,000</button></div>
+    <div class="hrow"><div><label class="lab" for="hMonths" data-t="months"></label><input id="hMonths" type="number" min="5" max="120" inputmode="numeric"></div>
+      <div><label class="lab" for="hNow" data-t="now"></label><input id="hNow" type="number" min="1" inputmode="numeric"></div></div>
+    <div class="hint" data-t="nowH"></div>
+    <div class="hrow"><div><span class="lab" data-t="type"></span><div class="seg" id="hType"><button type="button" data-v="ksfe" data-t="ksfe"></button><button type="button" data-v="local" data-t="local"></button></div></div>
+      <div><span class="lab" data-t="mode"></span><div class="seg" id="hMode"><button type="button" data-v="auction" data-t="auction"></button><button type="button" data-v="draw" data-t="draw"></button></div></div></div>
+  </div>
+  <div class="hstep hide" data-s="2">
+    <h3 data-t="h2T"></h3><p class="hs" data-t="exRates"></p>
+    <div class="hrates">
+      <div><label for="hMaxd" data-t="maxd"></label><input id="hMaxd" type="number" step="0.5"></div>
+      <div><label for="hComm" data-t="comm"></label><input id="hComm" type="number" step="0.5"></div>
+      <div><label for="hGst" data-t="gstL"></label><input id="hGst" type="number" step="1"></div>
+      <div><label for="hLoan" data-t="loanR"></label><input id="hLoan" type="number" step="0.5"></div>
+      <div><label for="hFdK" data-t="fdK"></label><input id="hFdK" type="number" step="0.1"></div>
+      <div><label for="hFdB" data-t="fdB"></label><input id="hFdB" type="number" step="0.1"></div>
+    </div>
+    <button type="button" class="hlink" id="hReset" data-t="hReset"></button>
+  </div>
+  <div class="hstep hide" data-s="3">
+    <h3 data-t="h3T"></h3><p class="hs" data-t="h3S"></p>
+    <div class="hgoals" id="hGoal">
+      <button type="button" data-v="loan"><span>💰</span><b data-t="gLoan"></b><small data-t="gLoanS"></small></button>
+      <button type="button" data-v="save"><span>🏦</span><b data-t="gSave"></b><small data-t="gSaveS"></small></button>
+      <button type="button" data-v="trick"><span>✨</span><b data-t="gTrick"></b><small data-t="gTrickS"></small></button>
+    </div>
+  </div>
+  <div class="hnav"><button type="button" class="hback" id="hBack" data-t="hBack"></button><button type="button" class="hnext" id="hNext" data-t="hNext"></button></div>
+</div></div>
+
+<div class="wrap">
+  <button type="button" class="hlpbtn" id="hlpOpen"><span data-t="hlpBtn"></span><small data-t="hlpBtnS"></small></button>
+  <section class="card">
+    <details class="sec" id="inBox" open><summary><h2><span class="n">1</span><span data-t="s1"></span></h2><span class="sum" id="inSum"></span></summary>
+    <div class="field">
+      <span class="lab" data-t="inst"></span>
+      <div class="affix pre"><span class="ax">₹</span><input id="inst" autocomplete="off" type="number" min="100" step="100" value="5000" inputmode="numeric"></div>
+      <div class="qs" id="instQ"><button class="q" data-v="2000">₹2,000</button><button class="q" data-v="5000">₹5,000</button><button class="q" data-v="10000">₹10,000</button><button class="q" data-v="25000">₹25,000</button><button class="q" data-v="50000">₹50,000</button></div>
+    </div>
+    <div class="field">
+      <span class="lab" data-t="months"></span>
+      <div class="affix suf"><input id="months" autocomplete="off" type="number" min="5" max="120" value="40" inputmode="numeric"><span class="ax" data-t="moS"></span></div>
+      <div class="qs" id="monthsQ"><button class="q" data-v="20">20</button><button class="q" data-v="30">30</button><button class="q" data-v="40">40</button><button class="q" data-v="50">50</button><button class="q" data-v="60">60</button><button class="q" data-v="100">100</button></div>
+    </div>
+    <div class="field">
+      <span class="lab" data-t="now"></span>
+      <div class="affix suf"><input id="now" autocomplete="off" type="number" min="1" value="1" inputmode="numeric"><span class="ax" data-t="moN"></span></div>
+      <div class="hint" data-t="nowH"></div>
+    </div>
+    <details class="more" id="fine"><summary data-t="fineS"></summary><div style="margin-top:10px">
+    <div class="two">
+      <div class="field">
+        <span class="lab" data-t="mode"></span>
+        <div class="seg" id="mode">
+          <button class="on" data-v="auction"><span data-t="auction"></span><small data-t="auctionS"></small></button>
+          <button data-v="draw"><span data-t="draw"></span><small data-t="drawS"></small></button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="lab" data-t="type"></span>
+        <div class="seg" id="type">
+          <button class="on" data-v="ksfe"><span data-t="ksfe"></span><small data-t="ksfeS"></small></button>
+          <button data-v="local"><span data-t="local"></span><small data-t="localS"></small></button>
+        </div>
+      </div>
+    </div>
+    <div class="two">
+      <div class="field" id="heatBox">
+        <span class="lab" data-t="heat"></span>
+        <div class="seg" id="heat">
+          <button data-v="hot"><span data-t="hot"></span><small data-t="hotS"></small></button>
+          <button class="on" data-v="normal"><span data-t="normal"></span></button>
+          <button data-v="cool"><span data-t="cool"></span><small data-t="coolS"></small></button>
+        </div>
+        <span class="lab" style="margin-top:10px;display:block" data-t="paidL"></span>
+        <input id="paid" autocomplete="off" type="number" min="0" step="10" placeholder="₹" inputmode="numeric">
+        <div class="hint" id="paidHint"></div>
+      </div>
+    </div>
+    </div></details>
+    <details class="more">
+      <summary data-t="adv"></summary>
+      <div class="adv">
+        <div><label for="fdK" data-t="fdK"></label><input id="fdK" autocomplete="off" type="number" step="0.1" value="7.7"></div>
+        <div><label for="fdB" data-t="fdB"></label><input id="fdB" autocomplete="off" type="number" step="0.1" value="6.5"></div>
+        <div><label for="loan" data-t="loanR"></label><input id="loan" autocomplete="off" type="number" step="0.5" value="16"></div>
+        <div><label for="maxd" data-t="maxd"></label><input id="maxd" autocomplete="off" type="number" value="30"></div>
+        <div><label for="comm" data-t="comm"></label><input id="comm" autocomplete="off" type="number" value="5"></div>
+        <div><label for="gst" data-t="gstL"></label><input id="gst" autocomplete="off" type="number" step="1" value="18"></div>
+      </div>
+      <p class="hint" data-t="exRates"></p>
+    </details>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2><span class="n">2</span><span data-t="s2"></span></h2>
+    <div class="tiles" id="goal">
+      <button class="tile on" data-v="loan"><span class="e">💰</span><b data-t="gLoan"></b><small data-t="gLoanS"></small><span class="r" id="rLoan"></span><span class="base" id="bLoan"></span></button>
+      <button class="tile" data-v="save"><span class="e">🏦</span><b data-t="gSave"></b><small data-t="gSaveS"></small><span class="r" id="rSave"></span><span class="base" id="bSave"></span></button>
+      <button class="tile" data-v="trick"><span class="e">✨</span><b data-t="gTrick"></b><small data-t="gTrickS"></small><span class="r" id="rTrick"></span><span class="base" id="bTrick"></span></button>
+    </div>
+    <div class="detail" id="detail">
+      <div id="drawNote" class="drawnote hide" data-t="drawNote"></div>
+      <div class="k" id="dK"></div>
+      <div class="big" id="dBig"></div>
+      <span class="badge" id="dBadge"></span>
+      <div class="rate" id="rate"></div>
+      <div class="slider">
+        <div class="row"><span class="lab" data-t="try"></span><b id="cmLab"></b></div>
+        <input id="cm" type="range" min="1" max="40" value="1" class="hide">
+        <svg class="chart" id="chart"></svg>
+        <p class="note chartnote" id="chartNote"></p>
+        <div class="legend"><span><i class="dot" style="background:var(--save)"></i><span data-t="lg1"></span></span><span><i class="dot" style="background:var(--bad)"></i><span data-t="lg2"></span></span></div>
+
+      </div>
+      <div id="dBody"></div>
+      <details class="more" id="bidBox" style="margin-top:12px">
+        <summary data-t="bidS"></summary>
+        <div style="margin-top:8px"><input id="bid" autocomplete="off" type="number" min="0" step="500" value="60000" inputmode="numeric"><div class="hint" id="bidHint"></div></div>
+      </details>
+    </div>
+  </section>
+
+  <section class="card">
+    <details class="sec" id="chBox"><summary><h2><span class="n">3</span><span data-t="s4"></span></h2></summary>
+    <details class="more" style="margin-top:10px">
+      <summary data-t="tblS"></summary>
+      <div class="tbl"><table><thead><tr><th data-t="thM"></th><th class="hide-sm" data-t="thB"></th><th data-t="thG"></th><th id="thV"></th></tr></thead><tbody id="tbl"></tbody></table></div>
+    </details>
+    </details>
+  </section>
+
+  <section class="card">
+    <details class="sec"><summary><h2 data-t="howT"></h2></summary>
+    <div class="steps">
+      <div class="step"><div class="e">👥</div><b data-t="h1"></b><span class="note" data-t="h1n"></span></div>
+      <div class="step"><div class="e">🔨</div><b data-t="h2"></b><span class="note" data-t="h2n"></span></div>
+      <div class="step"><div class="e">↩️</div><b data-t="h3"></b><span class="note" data-t="h3n"></span></div>
+      <div class="step"><div class="e">✨</div><b data-t="h4"></b><span class="note" data-t="h4n"></span></div>
+    </div>
+    </details>
+  </section>
+
+  <p class="note" data-t="disc"></p>
+  <footer class="foot"><img src="assets/logo.png" alt="" width="44" height="44"><div class="ft"><b data-t="madeBy"></b><span data-t="madeS"></span></div><div class="soc"><span class="soct" data-t="follow"></span><div class="socb">
+    <a class="ig" href="https://www.instagram.com/ai_tech_vartha/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>Instagram</a>
+    <a class="yt" href="https://www.youtube.com/@aitechvartha" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .6 12a31 31 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .4-4.8 31 31 0 0 0-.4-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg>YouTube</a>
+    <a class="fb" href="https://www.facebook.com/1419285704602314" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2v2.3H7.6V14h2.7v8h3.2z"/></svg>Facebook</a></div></div></footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const inr = n => (n<0?'−':'') + '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN');
+const pct = r => r == null ? '–' : (r*100).toFixed(1) + '%';
+
+// ---------- words ----------
+const T = {
+ml:{
+  tag:'ഫ്രീ കുറി കാൽക്കുലേറ്റർ', tag2:' · ലോഗിൻ വേണ്ട', title:'കുറി എപ്പോൾ വിളിക്കണം?',
+  sub:'കുറി, ബാങ്ക് ലോൺ, FD: ഏതാണ് ലാഭം എന്ന് രൂപയിൽ തന്നെ നോക്കാം.',
+  s1:'നിങ്ങളുടെ കുറി', inst:'മാസ അടവ്', months:'എത്ര മാസത്തെ കുറി?',
+  mode:'കുറി എങ്ങനെയാണ് നൽകുന്നത്?', auction:'ലേലം', auctionS:'കൂടിയ കിഴിവിന്', draw:'നറുക്ക്', drawS:'നറുക്കെടുപ്പിലൂടെ',
+  type:'ആരാണ് നടത്തുന്നത്?', ksfe:'KSFE / കമ്പനി', ksfeS:'5% കമ്മീഷൻ', local:'നാട്ടുകുറി', localS:'കമ്മീഷൻ ഇല്ല',
+  heat:'ലേലത്തിൽ കിഴിവ് എത്ര പോകും?', hot:'കൂടുതൽ', hotS:'തിരക്ക്', normal:'സാധാരണ', cool:'കുറവ്', coolS:'തിരക്കില്ല',
+  paidL:'അല്ലെങ്കിൽ: ഈ മാസം അടച്ച തുക (അറിയാമെങ്കിൽ)', paidNo:'ആദ്യ മാസം ലാഭവിഹിതം ഇല്ല; 2-ാം മാസം മുതൽ ഇത് ഉപയോഗിക്കാം.', paidOk:(d,p,m)=>`ഇതനുസരിച്ച് ${m}-ാം മാസത്തെ ലേലക്കിഴിവ് ഏകദേശം ${d} (സലയുടെ ${p}%). ബാക്കി മാസങ്ങൾ ഇതിനോട് ഒത്തുനോക്കി.`, paidBad:'തുക മാസത്തവണയെക്കാൾ കൂടരുത്.', now:'ഇപ്പോൾ എത്രാമത്തെ മാസം?', nowH:'പുതിയ കുറി ആണെങ്കിൽ 1 എന്ന് ഇടുക.', moS:'മാസം', moN:'-ാം മാസം', follow:'പുതിയ AI ടൂളുകൾക്ക് follow ചെയ്യൂ', madeBy:'AI Tech Vartha-യുടെ ഫ്രീ ടൂൾ', madeS:'AI, ടെക്, സൈബർ: വാർത്തകളും ടിപ്‌സും ലളിതമായ മലയാളത്തിൽ',
+  adv:'പലിശ നിരക്കുകൾ മാറ്റാം', gstL:'കമ്മീഷനിലെ GST %', exRates:'ഇവ ഉദാഹരണ നിരക്കുകളാണ്. നിങ്ങളുടെ കുറിയിലോ ബാങ്കിലോ വേറെയാണെങ്കിൽ മാറ്റുക.', hlpBtn:'🧭 സഹായിയോടൊപ്പം തുടങ്ങാം', hlpBtnS:'3 ചെറിയ ചോദ്യങ്ങൾ · നിരക്കുകൾ മാറ്റാം', h1T:'നിങ്ങളുടെ കുറി', h1S:'പാസ്ബുക്ക് നോക്കി ഇടാം. അറിയില്ലെങ്കിൽ ഇപ്പോഴുള്ളത് മതി.', h2T:'നിരക്കുകൾ', hReset:'↺ ഉദാഹരണ നിരക്കുകളിലേക്ക് മടങ്ങുക', h3T:'എന്താണ് അറിയേണ്ടത്?', h3S:'ഒന്ന് തിരഞ്ഞെടുക്കൂ. പിന്നീട് മാറ്റാം.', hBack:'← പിന്നോട്ട്', hNext:'അടുത്തത് →', hSkip:'ഒഴിവാക്കുക ✕', fdK:'KSFE FD പലിശ %', fdB:'ബാങ്ക് FD / RD പലിശ %', loanR:'ബാങ്ക് ലോൺ പലിശ %', maxd:'പരമാവധി ലേലക്കിഴിവ് %', comm:'കമ്മീഷൻ %',
+  s2:'എന്താണ് ലാഭം? ഒന്ന് തിരഞ്ഞെടുക്കൂ',
+  gLoan:'കുറി vs ലോൺ', gLoanS:'പണം ഉടനെ വേണമെങ്കിൽ', gSave:'കുറി + FD', gSaveS:'അടവ് മുഴുവൻ സ്വന്തമായി', gTrick:'കുറി + FD പലിശ', gTrickS:'FD പലിശ കൊണ്ട് അടവ്',
+  try:'വേറെ മാസം നോക്കാം', bidS:'ആ മാസത്തെ ലേലക്കിഴിവ് മാറ്റാം', drawNote:'നറുക്കിൽ മാസം തിരഞ്ഞെടുക്കാൻ പറ്റില്ല. ഓരോ മാസവും കിട്ടിയാൽ എന്താകും എന്ന് നോക്കാം.',
+  s4:'എല്ലാ മാസവും: മുഴുവൻ പട്ടിക', lg1:'കുറി ലാഭം', lg2:'കുറി നഷ്ടം',
+  tblS:'മുഴുവൻ പട്ടിക കാണുക', thM:'മാസം', thB:'ലേലക്കിഴിവ്', thG:'കിട്ടുന്നത്',
+  howT:'കുറി എങ്ങനെ?',
+  h1:'എല്ലാവരും അടയ്ക്കുന്നു', h1n:'എല്ലാ മാസവും എല്ലാ അംഗങ്ങളും മാസ അടവ് അടയ്ക്കുന്നു. ആകെ തുകയാണ് സല.',
+  h2:'ഒരാൾ കുറി എടുക്കുന്നു', h2n:'ലേലത്തിൽ: ഏറ്റവും കൂടുതൽ കിഴിവ് പറയുന്നയാൾക്ക്. നറുക്കിൽ: ഭാഗ്യമുള്ളയാൾക്ക്.',
+  h3:'കിഴിവ് എല്ലാവർക്കും', h3n:'ലേലക്കിഴിവ് (കമ്മീഷൻ കഴിഞ്ഞ്) എല്ലാവർക്കും വീതിക്കും. അതുകൊണ്ട് അടുത്ത മാസത്തെ അടവ് കുറയും.',
+  h4:'കുറി + FD ട്രിക്ക്', h4n:'കുറി വിളിച്ച് കിട്ടുന്ന പണം KSFE FD-യിൽ ഇടുക. FD-യുടെ മാസപ്പലിശ കൊണ്ട് കുറി അടവിന്റെ ഒരു ഭാഗം അടയ്ക്കാം; ബാക്കി മാത്രം കയ്യിൽ നിന്ന്. കുറി തീരുമ്പോൾ FD തുക മുഴുവൻ തിരികെ.',
+  disc:'ഇത് ഏകദേശ കണക്ക് മാത്രം. വരും മാസങ്ങളിലെ ലേലം ഊഹം മാത്രമാണ്. കുറി എടുക്കാൻ ജാമ്യം വേണം (KSFE FD ജാമ്യമായി എടുക്കുമോ എന്ന് ബ്രാഞ്ചിൽ ചോദിക്കുക); കമ്മീഷന് GST ഉണ്ടാകാം; പലിശ നിരക്കുകൾ മാറാം. നിങ്ങൾ നൽകുന്ന വിവരങ്ങൾ ഈ പേജിന് പുറത്ത് പോകില്ല. ഈ ടൂളിന് KSFE-യുമായോ മറ്റേതെങ്കിലും ചിട്ടി സ്ഥാപനവുമായോ ബന്ധമില്ല; നിരക്കുകളും നിയമങ്ങളും നിങ്ങളുടെ ബ്രാഞ്ചിൽ ഉറപ്പാക്കുക. ഇത് സാമ്പത്തിക ഉപദേശമല്ല.',
+  month:k=>`${k}-ാം മാസം`, now_:' (ഇപ്പോൾ)', last:' (അവസാനം)', best:'⭐ ഏറ്റവും നല്ല മാസം', notBest:k=>`⭐ ഏറ്റവും നല്ലത്: ${k}-ാം മാസം`,
+  callIn:k=>`${k}-ാം മാസം വിളിക്കുക`, ifGet:k=>`${k}-ാം മാസം കിട്ടിയാൽ`, ifCall:k=>`${k}-ാം മാസം വിളിച്ചാൽ`,
+  beLow:(x,p)=>`👉 ലേലക്കിഴിവ് ${x} (${p}%)-ൽ താഴെയാണെങ്കിൽ മാത്രം വിളിക്കുക`, waitEnd:'അവസാനം വരെ കാത്തിരിക്കൂ',
+  baseNow:'(ഇപ്പോൾ വിളിച്ചാൽ)', baseBest:'(ഏറ്റവും നല്ല മാസം)', baseGet:'(ഇപ്പോൾ കിട്ടിയാൽ)', share:'WhatsApp-ൽ അയക്കുക', share2:'WhatsApp-ൽ അയക്കാം', shMine:(i,n,m)=>`🪙 എന്റെ കുറി: മാസ അടവ് ${i} · ${n} മാസം${m>1?` · ഇപ്പോൾ ${m}-ാം മാസം`:''}`, shEst:'(ഏകദേശ കണക്ക് മാത്രം)', shAsk:'നിങ്ങളുടെ കുറി ഏത് മാസം വിളിക്കണം? ഫ്രീ ആയി നോക്കൂ 👇', shInv:'🪙 കുറി ഏത് മാസം വിളിക്കണം? ബാങ്ക് ലോണിനെക്കാൾ ലാഭമാണോ, FD-യെക്കാൾ നഷ്ടമാണോ എന്ന് രൂപയിൽ തന്നെ നോക്കാം.', shFree:'ഫ്രീ ആണ്, ലോഗിൻ വേണ്ട 👇',
+  hNow:(k,g,x,p,e,res)=>`👉 ഇപ്പോൾ (${k}-ാം മാസം) വിളിച്ചാൽ ${g} കിട്ടും. ലോണിനെക്കാൾ ലാഭമാകാൻ ലേലക്കിഴിവ് ${x} (${p}%)-ൽ താഴെ ആകണം. സാധാരണ കിഴിവ് ${e} ആയതിനാൽ ${res}.`,
+  resK:x=>`ഇപ്പോൾ കുറി വിളിച്ചാൽ ${x} ലാഭം`, resL:x=>`ഇപ്പോൾ ബാങ്ക് ലോൺ എടുത്താൽ ${x} ലാഭം`,
+  ifGetStep:(k,g)=>`<b>${k}-ാം മാസം</b> കുറി കിട്ടിയാൽ → <b>${g}</b>`,
+  hNowA:(k,g)=>`👉 ഇപ്പോൾ (${k}-ാം മാസം) വിളിച്ചാൽ ${g} കിട്ടും: ബാങ്ക് ലോണിനെക്കാൾ ലാഭം.`,
+  hNowN:(k,g)=>`👉 ഇപ്പോൾ (${k}-ാം മാസം) വിളിച്ചാൽ ${g} കിട്ടും, പക്ഷേ ബാങ്ക് ലോൺ ആണ് ലാഭം.`,
+  hSaveW:(k,x,end)=>`🏦 സമ്പാദ്യത്തിന്: ${end?'അവസാനം വരെ കാത്തിരിക്കൂ':k+'-ാം മാസം വിളിക്കൂ'}. FD-യെക്കാൾ ${x} കൂടുതൽ.`,
+  hSaveL:x=>`🏦 സമ്പാദ്യത്തിന്: ഈ കുറിയെക്കാൾ ബാങ്ക് FD ${x} കൂടുതൽ തരും.`,
+  hDraw:k=>`🎲 നറുക്ക് കുറി: ${k}-ാം മാസത്തിന് മുമ്പ് കിട്ടിയാൽ പലിശയില്ലാ കടം പോലെ ലാഭം; അതിന് ശേഷം കിട്ടിയാൽ ബാങ്ക് FD ആണ് ലാഭം.`, hDraw0:'🎲 നറുക്ക് കുറി: ഏത് മാസം കിട്ടിയാലും FD-യെക്കാൾ ലാഭം.',
+  rCost:'മൊത്തം ചെലവ്', costK:'കിഴിവ് നഷ്ടം', costL:'പലിശ', beAlways:'👉 പരമാവധി കിഴിവിലും കുറി ആണ് ലാഭം', beNever:'👉 ഈ മാസം ഏത് കിഴിവിലും കുറി നഷ്ടമാണ്',
+  kLoan:'💰 പണം വേണമെങ്കിൽ: കുറി ആണോ ബാങ്ക് ലോൺ ആണോ ലാഭം?', kSave:'🏦 സമ്പാദ്യം: കുറി ആണോ FD ആണോ ലാഭം?', kTrick:'✨ കുറി വിളിച്ച് FD ഇട്ടാൽ',
+  colKuri:'കുറി', colLoan:'ബാങ്ക് ലോൺ', colFd:'ബാങ്ക് FD', colTrick:'കുറി + FD', colFull:'കുറി + FD (മുഴുവൻ അടവ്)', yr:'വർഷം', rateSave:x=>`ഈ പ്ലാനിൽ നിങ്ങളുടെ പണത്തിന് കിട്ടുന്ന പലിശ · ബാങ്ക് FD ${x}%`, rateLoan:x=>`ഈ മാസം വിളിച്ചാൽ കുറിയുടെ ചെലവ് (പലിശയായി) · ബാങ്ക് ലോൺ ${x}%`, fineS:'⚙️ കൂടുതൽ: ലേലം/നറുക്ക്, KSFE/നാട്ടുകുറി, കിഴിവ്, ഈ മാസം അടച്ച തുക', seeMore:'📋 വിശദമായി കാണാം (കണക്ക്, പട്ടിക)', lostI:(m,x)=>`💡 കുറിയിൽ അടയ്ക്കുന്ന പണത്തിന് പലിശ ഇല്ല, ലാഭവിഹിതം മാത്രം. ${m}-ാം മാസം വരെ അടച്ച തുക ബാങ്ക് FD-യിൽ ഇട്ടിരുന്നെങ്കിൽ അതുവരെ ഏകദേശം ${x} പലിശ കിട്ടുമായിരുന്നു.`, fullCk:'പലിശ എടുക്കാതെ, അടവ് മുഴുവൻ സ്വന്തമായി അടയ്ക്കും', fullS1:(m,x)=>`${m}-ാം മാസം കുറി വിളിക്കുക → ${x} കിട്ടും`, fullS2:x=>`ആ പണം KSFE FD-യിൽ ഇടുക; മാസം ${x} പലിശ FD-യിൽ തന്നെ കൂടും`, fullS3:(n,x)=>`ഇനിയുള്ള ${n} മാസം: അടവ് ${x} മുഴുവൻ കയ്യിൽ നിന്ന്`, fullS4:x=>`കുറി തീരുമ്പോൾ FD ${x} തിരികെ`, fullQ:'പലിശ എടുക്കാതെ, അടവ് മുഴുവൻ സ്വന്തമായി അടച്ചാലോ?', fullNote:x=>`കുറി തുക ${x} മുഴുവൻ FD-യിൽ; പലിശ അതിൽ തന്നെ കൂടുന്നു. എല്ലാ അടവും സ്വന്തം കയ്യിൽ നിന്ന്.`, fullVs:(x,more,extra)=> more ? `ലാഭം നോക്കിയാൽ മുഴുവൻ അടവ് അടയ്ക്കുന്നതാണ് ${x} മെച്ചം (കയ്യിൽ നിന്ന് ആകെ ${extra} കൂടുതൽ അടയ്ക്കണം).` : `ലാഭം നോക്കിയാൽ പലിശ കൊണ്ട് അടവ് അടയ്ക്കുന്നതാണ് ${x} മെച്ചം.`,
+  rGet:'കയ്യിൽ കിട്ടുന്നത്', rMonthly:'മാസ അടവ്', rFor:'എത്ര മാസം', rExtra:'അധികം അടയ്ക്കുന്നത്',
+  rPaid:'ആകെ അടയ്ക്കുന്നത്', rEnd:'കുറി തീരുമ്പോൾ കയ്യിൽ', rProfit:'ലാഭം',
+  rPocket:'കയ്യിൽ നിന്ന് ആകെ', rBack:'അവസാനം കിട്ടുന്നത്',
+  months_:n=>`${n} മാസം`,
+  rRate:'വർഷ പലിശയായി', loanNote:g=>`ലോൺ എടുത്താലും കുറി അടവ് തുടരണം; കുറി തീരുമ്പോൾ ${g} മുഴുവൻ കിട്ടും. ഈ മാസം വിളിച്ചാൽ അത് കിട്ടില്ല: അതാണ് കുറിയുടെ ചെലവ്. ലോൺ EMI നേരത്തെ തിരിച്ചടയ്ക്കുന്നതിനാൽ ₹ തുകകൾ നേരിട്ട് താരതമ്യം ചെയ്യരുത്; ഫലം ഇന്നത്തെ മൂല്യത്തിലാണ്.`,
+  loanLast:'അവസാന മാസം: ഇനി അടവില്ല, ലോൺ വേണ്ട.',
+  saveNote:'കുറി കിട്ടിയ പണം മുഴുവൻ FD-യിൽ ഇടുന്നു; ബാക്കി അടവുകൾ എല്ലാം സ്വന്തം കയ്യിൽ നിന്ന് അടയ്ക്കുന്നു. അതേ തുക എല്ലാ മാസവും bank FD/RD-യിൽ ഇട്ടാൽ കിട്ടുന്നതുമായി താരതമ്യം.',
+  trickSteps:(k,g,i,p,q,n)=>[`<b>${k}-ാം മാസം</b> കുറി വിളിക്കുക → <b>${g}</b> കിട്ടും`,`ആ പണം KSFE FD-യിൽ ഇടുക → മാസം <b>${i}</b> പലിശ`,`ഇനിയുള്ള ${n} മാസം: അടവ് ${p} − പലിശ ${i} = കയ്യിൽ നിന്ന് <b>${q}</b> മാത്രം`,`കുറി തീരുമ്പോൾ FD <b>${g}</b> മുഴുവൻ തിരികെ`],
+  trickFree:'FD പലിശ കൊണ്ട് അടവ് മുഴുവൻ തീരും! കയ്യിൽ നിന്ന് ഒന്നും വേണ്ട.',
+  trickNote:'ബാങ്ക് FD കോളം: അതേ തുക എല്ലാ മാസവും കയ്യിൽ നിന്ന് ബാങ്ക് FD / RD-യിൽ ഇട്ടാൽ.',
+  vKuri:x=>`✅ കുറി ആണ് ലാഭം: ${x} കൂടുതൽ`, vLoan:x=>`❌ ബാങ്ക് ലോൺ എടുത്താൽ ${x} ലാഭം`, vTrick:x=>`✅ കുറി + FD ആണ് ലാഭം: ${x} കൂടുതൽ`, vFd:x=>`❌ ബാങ്ക് FD ആണ് ലാഭം: ${x} കൂടുതൽ`,
+  vKuriCheap:x=>`✅ കുറി വിളിച്ചാൽ ${x} ലാഭം`,
+  tLoanK:x=>`കുറിക്ക് ${x} കുറവ് ചെലവ്`, tLoanW:x=>`ലോണിന് ${x} കുറവ് ചെലവ്`, tKuri:x=>`കുറി ${x} കൂടുതൽ തരും`, tFdW:x=>`FD ${x} കൂടുതൽ തരും`, tTrick:x=>`ട്രിക്ക് ${x} കൂടുതൽ തരും`, tTrickL:x=>`FD ${x} കൂടുതൽ തരും`,
+  beatFrom:k=>`✅ ${k}-ാം മാസം മുതൽ കുറി ലാഭം`, avoid:(a,b)=>`✋ ${a}–${b} മാസങ്ങൾ ഒഴിവാക്കുക`,
+  cnLoan:'ഓരോ ബാറും: ബാങ്ക് ലോണിനെക്കാൾ കുറി എത്ര ലാഭം / നഷ്ടം.', cnSave:'ഓരോ ബാറും: FD-യെക്കാൾ കുറി എത്ര ലാഭം / നഷ്ടം.', cnTrick:'ഓരോ ബാറും: കുറി + FD ട്രിക്ക്, ബാങ്ക് FD-യെക്കാൾ എത്ര ലാഭം / നഷ്ടം.',
+  cnTap:' 👆 ബാറുകളിലൂടെ വിരൽ ഓടിച്ച് മാസം മാറ്റാം.', thV:'കുറി ലാഭം',
+  bidHint:(p,s,e)=>`സലയുടെ ${p}% (സല ${s}). സാധാരണ ഏകദേശം ${e}`, useIt:'അത് ഇടുക', maxB:x=>` പരമാവധി ${x}.`, minB:x=>` കുറഞ്ഞത് ${x} (കമ്മീഷൻ).`
+},
+en:{
+  tag:'Free chitty calculator', tag2:' · no login', title:'When should you call your kuri?',
+  sub:'Chitty, bank loan or FD: see which one wins, in rupees.',
+  s1:'Your kuri', inst:'Monthly payment', months:'How many months?',
+  mode:'How is the kuri given?', auction:'Auction', auctionS:'highest discount', draw:'Draw', drawS:'by lot',
+  type:'Who runs it?', ksfe:'KSFE / company', ksfeS:'5% commission', local:'Local kuri', localS:'no commission',
+  heat:'How big are the auction discounts?', hot:'High', hotS:'busy', normal:'Normal', cool:'Low', coolS:'quiet',
+  paidL:'Or: amount you paid this month (if you know)', paidNo:'No dividend in month 1; use this from month 2.', paidOk:(d,p,m)=>`So the auction discount in month ${m} was about ${d} (${p}% of the pot). The other months are matched to it.`, paidBad:'The amount can\'t be more than the instalment.', now:'Which month is it now?', nowH:'Put 1 if the kuri is new.', moS:'months', moN:'th month', follow:'Follow for more free AI tools', madeBy:'A free tool by AI Tech Vartha', madeS:'AI, tech & cyber news and tips, in simple Malayalam',
+  adv:'Change interest rates', gstL:'GST on commission %', exRates:'These are example rates. Change any that are different for your chitty or bank.', hlpBtn:'🧭 Start with the helper', hlpBtnS:'3 quick questions · edit the rates', h1T:'Your chitty', h1S:'Check your passbook. If unsure, keep what is filled in.', h2T:'Rates', hReset:'↺ Back to the example rates', h3T:'What do you want to know?', h3S:'Pick one. You can switch later.', hBack:'← Back', hNext:'Next →', hSkip:'Skip ✕', fdK:'KSFE FD interest %', fdB:'Bank FD / RD interest %', loanR:'Bank loan interest %', maxd:'Max auction discount %', comm:'Commission %',
+  s2:'Which is better? Pick one',
+  gLoan:'Chitty vs loan', gLoanS:'if you need money now', gSave:'Chitty + FD', gSaveS:'you pay every instalment', gTrick:'Chitty + FD interest', gTrickS:'FD interest pays your instalment',
+  try:'Try another month', bidS:'Change that month\'s auction discount', drawNote:'In a draw you can\'t choose the month. See what happens if you get it in each month.',
+  s4:'All months: full table', lg1:'Chitty wins', lg2:'Chitty loses',
+  tblS:'See the full table', thM:'Month', thB:'Discount', thG:'You get',
+  howT:'How a kuri works',
+  h1:'Everyone pays', h1n:'Every month all members pay the monthly amount. The total is the pot (sala).',
+  h2:'One person takes it', h2n:'Auction: whoever accepts the biggest discount. Draw: the lucky name.',
+  h3:'Discount is shared', h3n:'The discount (after commission) is shared by all, so next month\'s payment is smaller.',
+  h4:'Chitty + FD trick', h4n:'Call the chitty and put the money in a KSFE FD. The FD\'s monthly interest pays part of your instalment; you pay only the rest. When the kuri ends, you get the full FD back.',
+  disc:'Estimates only. Future auction discounts are guesses. Taking a kuri needs security (ask your branch if a KSFE FD can be the security); commission may have GST; interest rates change. Nothing you type leaves this page. This tool is not affiliated with KSFE or any chitty company; confirm rates and rules with your branch. Not financial advice.',
+  month:k=>`Month ${k}`, now_:' (now)', last:' (last)', best:'⭐ Best month', notBest:k=>`⭐ Best: month ${k}`,
+  callIn:k=>`Call in month ${k}`, ifGet:k=>`If you get it in month ${k}`, ifCall:k=>`If you call in month ${k}`,
+  beLow:(x,p)=>`👉 Call only if the discount is below ${x} (${p}%)`, waitEnd:'Wait till the end',
+  baseNow:'(if you call now)', baseBest:'(best month)', baseGet:'(if you get it now)', share:'Send on WhatsApp', share2:'Send this on WhatsApp', shMine:(i,n,m)=>`🪙 My chitty: ${i} a month · ${n} months${m>1?` · now month ${m}`:''}`, shEst:'(an estimate only)', shAsk:'Which month should you call YOUR chitty? Check free 👇', shInv:'🪙 Which month should you call your chitty? See in rupees whether it beats a bank loan or loses to an FD.', shFree:'Free, no login 👇',
+  hNow:(k,g,x,p,e,res)=>`👉 Call now (month ${k}) and you get ${g}. To beat a bank loan the discount must be below ${x} (${p}%). The usual discount is ${e}, so ${res}.`,
+  resK:x=>`calling the chitty now saves you ${x}`, resL:x=>`a bank loan now saves you ${x}`,
+  ifGetStep:(k,g)=>`If you get it in <b>month ${k}</b> → <b>${g}</b>`,
+  hNowA:(k,g)=>`👉 Call now (month ${k}) and you get ${g}: cheaper than a bank loan.`,
+  hNowN:(k,g)=>`👉 Call now (month ${k}) and you get ${g}, but a bank loan is cheaper.`,
+  hSaveW:(k,x,end)=>`🏦 For saving: ${end?'wait till the end':'call in month '+k}. ${x} more than an FD.`,
+  hSaveL:x=>`🏦 For saving: a bank FD gives ${x} more than this chitty.`,
+  hDraw:k=>`🎲 Draw kuri: get it before month ${k} and it's like an interest-free loan; after that, a bank FD is better.`, hDraw0:'🎲 Draw kuri: whichever month you get it, it beats an FD.',
+  rCost:'Total cost', costK:'discount lost', costL:'interest', beAlways:'👉 The chitty wins even at the max discount', beNever:'👉 This month the chitty loses at any discount',
+  kLoan:'💰 Need money: chitty or bank loan?', kSave:'🏦 Saving: chitty or FD?', kTrick:'✨ Call the chitty, put it in an FD',
+  colKuri:'Chitty', colLoan:'Bank loan', colFd:'Bank FD', colTrick:'Chitty + FD', colFull:'Chitty + FD (full instalments)', yr:'year', rateSave:x=>`What your money earns in this plan · bank FD ${x}%`, rateLoan:x=>`Cost of taking the chitty this month, as interest · bank loan ${x}%`, fineS:'⚙️ More: auction/draw, KSFE/local, discount, amount paid this month', seeMore:'📋 See the details (numbers, table)', lostI:(m,x)=>`💡 A chitty pays no interest on your instalments, only the dividend. The money you paid up to month ${m} would have earned about ${x} interest in a bank FD by then.`, fullCk:'Leave the FD interest alone, I pay every instalment myself', fullS1:(m,x)=>`Call the chitty in month ${m} → get ${x}`, fullS2:x=>`Put it in a KSFE FD; the ${x} monthly interest stays and grows`, fullS3:(n,x)=>`Next ${n} months: pay the full ${x} instalment yourself`, fullS4:x=>`When the chitty ends, the FD gives back ${x}`, fullQ:'What if you leave the interest and pay every instalment yourself?', fullNote:x=>`All ${x} goes into the FD and its interest stays there. You pay every instalment yourself.`, fullVs:(x,more,extra)=> more ? `By profit, paying every instalment yourself is better by ${x} (you pay ${extra} more from your pocket in total).` : `By profit, letting the interest pay the instalments is better by ${x}.`,
+  rGet:'You get', rMonthly:'Monthly payment', rFor:'For', rExtra:'Extra you pay',
+  rPaid:'You pay in total', rEnd:'You have at the end', rProfit:'Profit',
+  rPocket:'From your pocket', rBack:'You get back',
+  months_:n=>`${n} months`,
+  rRate:'As yearly interest', loanNote:g=>`With a loan you keep paying the chitty and get the full ${g} at the end. Calling this month gives that up: that's the chitty's cost. A loan's EMIs repay early, so the ₹ totals aren't directly comparable; the result is in today's money.`,
+  loanLast:'Last month: no more payments, no loan needed.',
+  saveNote:'The whole chitty money goes into an FD and you pay every remaining instalment yourself. Compared with putting the same amounts in a bank FD/RD every month.',
+  trickSteps:(k,g,i,p,q,n)=>[`Call in <b>month ${k}</b> → you get <b>${g}</b>`,`Put it in a KSFE FD → <b>${i}</b> interest a month`,`Next ${n} months: payment ${p} − interest ${i} = only <b>${q}</b> from your pocket`,`When the kuri ends, the full FD <b>${g}</b> comes back`],
+  trickFree:'The FD interest covers the whole payment! Nothing from your pocket.',
+  trickNote:'Bank FD column: putting the same pocket money in a bank FD / RD every month.',
+  vKuri:x=>`✅ Chitty wins: ${x} more`, vLoan:x=>`❌ A bank loan saves you ${x}`, vTrick:x=>`✅ Chitty + FD wins: ${x} more`, vFd:x=>`❌ Bank FD wins: ${x} more`,
+  vKuriCheap:x=>`✅ Calling the chitty saves you ${x}`,
+  tLoanK:x=>`Chitty costs ${x} less`, tLoanW:x=>`Loan costs ${x} less`, tKuri:x=>`Chitty gives ${x} more`, tFdW:x=>`FD gives ${x} more`, tTrick:x=>`Trick gives ${x} more`, tTrickL:x=>`FD gives ${x} more`,
+  beatFrom:k=>`✅ Chitty wins from month ${k}`, avoid:(a,b)=>`✋ Avoid months ${a}–${b}`,
+  cnLoan:'Each bar: how much the chitty saves (or costs) compared with a bank loan.', cnSave:'Each bar: how much more (or less) the chitty gives than an FD.', cnTrick:'Each bar: the chitty + FD trick compared with a bank FD.',
+  cnTap:' 👆 Drag across the bars to change the month.', thV:'Chitty gain',
+  bidHint:(p,s,e)=>`${p}% of the pot (${s}). Usually about ${e}`, useIt:'use it', maxB:x=>` Max ${x}.`, minB:x=>` Min ${x} (commission).`
+}};
+let L = 'ml', SHARE = '#';
+try{ L = localStorage.getItem('kuri-lang') || 'ml'; }catch(e){}
+const QP = new URLSearchParams(location.search);
+if(['ml','en'].includes(QP.get('lang'))) L = QP.get('lang');
+const t = (k,...a) => { const v = T[L][k]; return typeof v === 'function' ? v(...a) : v; };
+function applyLang(){
+  document.documentElement.lang = L;
+  document.querySelectorAll('[data-t]').forEach(el => el.textContent = t(el.dataset.t));
+  [...$('lang').children].forEach(b => b.classList.toggle('on', b.dataset.v===L));
+  render();
+}
+$('lang').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; L = b.dataset.v; try{localStorage.setItem('kuri-lang', L)}catch(e){} applyLang(); });
+
+// ---------- inputs ----------
+const S = { full:false, type:'ksfe', heat:'normal', mode:'auction', goal:'loan', bidTouched:false, cmTouched:false };
+function seg(id, key, after){
+  $(id).addEventListener('click', e => {
+    const b = e.target.closest('button'); if(!b) return;
+    S[key] = b.dataset.v;
+    [...$(id).children].forEach(c => c.classList.toggle('on', c === b));
+    if(after) after();
+    S.bidTouched = false; render();
+  });
+}
+seg('type','type', ()=> $('comm').value = S.type==='ksfe' ? 5 : 0);
+const phone = () => matchMedia('(max-width:600px)').matches;
+if(phone()) $('chBox').open = false; else $('chBox').open = true;
+document.getElementById('goal').addEventListener('click', () => { if(phone()){ $('inBox').open = false; setTimeout(()=> $('detail').scrollIntoView({behavior:'smooth', block:'start'}), 60); } });
+seg('heat','heat'); seg('mode','mode', ()=> S.cmTouched=false); seg('goal','goal', ()=> S.cmTouched=false);
+function quick(box, input){
+  $(box).addEventListener('click', e => {
+    const b = e.target.closest('.q'); if(!b) return;
+    $(input).value = b.dataset.v; S.bidTouched=false; S.cmTouched=false; render();
+  });
+}
+quick('instQ','inst'); quick('monthsQ','months');
+['inst','months','maxd','comm','gst','fdK','fdB','loan','now','paid'].forEach(id => $(id).addEventListener('input', ()=>{ S.bidTouched=false; S.cmTouched=false; render(); }));
+$('cm').addEventListener('input', ()=>{ S.bidTouched=false; S.cmTouched=true; render(); });
+$('bid').addEventListener('input', ()=>{ S.bidTouched=true; render(); });
+function pickMonth(k){ $('cm').value = k; S.bidTouched=false; S.cmTouched=true; render(); }
+
+// ---------- maths ----------
+const CURVE = [[0,1],[.05,1],[.1,.85],[.2,.74],[.3,.55],[.4,.43],[.5,.37],[.6,.2],[.8,.08],[1,0]];
+function curveR(t){ if(t>=1) return 0; for(let i=1;i<CURVE.length;i++){ const [a,ra]=CURVE[i-1],[b,rb]=CURVE[i]; if(t<=b) return ra+(rb-ra)*(t-a)/(b-a); } return 0; }
+// Expected discount (₹) for each month 1..N. Draw kuri: no discount, only commission.
+function schedule(N, sala, maxD, comm, heat, mode){
+  const d = [];
+  for(let m=1;m<=N;m++){
+    let f;
+    // Shape from two real KSFE chitties (2026-11): max discount for the first few auctions, a quick drop to ~75%
+    // of the max, then a slow slide (~55% at 30% of the term, ~37% at half, ~20% at 60%); the end is extrapolated.
+    // r = share of the "max discount − commission" margin; High = slower slide, Low = faster (t^1.4 / t^0.7, so all reach 0 at the end).
+    if(mode==='draw' || m===N) f = comm;
+    else { const t = m/N, tt = heat==='hot' ? Math.pow(t,1.4) : heat==='cool' ? Math.pow(t,.7) : t, r = curveR(tt); f = comm + (maxD-comm)*r; } // High/Low bend the curve but it always ends at commission
+    d.push(Math.round(Math.max(comm, Math.min(maxD, f)) * sala / 100) * 100);
+  }
+  return d;
+}
+
+// Everything about taking the chitty in month k
+function outcome(k, N, inst, sala, disc, commAmt, fdK, fdB, loanR){
+  const pays = [];
+  for(let m=1;m<=N;m++) pays.push(inst - (m>1 ? Math.max(0, disc[m-2]-commAmt)/N : 0)); // dividend from last month's auction
+  const gst = (+(document.getElementById('gst')?.value ?? 18) || 0)/100*commAmt; // GST on the commission, taken from the prize (18% in real KSFE ledgers); editable
+  const get = sala - disc[k-1] - gst, paid = pays.reduce((a,b)=>a+b,0);
+  const before = pays.slice(0,k).reduce((a,b)=>a+b,0), after = paid - before, n = N-k;
+  const mK = Math.pow(1+fdK,1/12)-1, mB = Math.pow(1+fdB,1/12)-1;
+  const fv = (arr, start) => arr.reduce((s,p,i)=> s + p*Math.pow(1+mB, N-1-(start+i)), 0); // bank FD/RD value at month N
+
+  // 1) need the money now: call the chitty now, OR take a bank loan of the same amount, keep paying the
+  //    chitty and get the full pot at the end. Chitty cost = pot at the end − pot now; loan cost = interest.
+  const endGet = sala - commAmt - gst, i = loanR/12;
+  const emi = n>0 ? (i ? get*i/(1-Math.pow(1+i,-n)) : get/n) : 0;
+  const bankInt = n>0 ? emi*n - get : 0;
+  const kuriCost = endGet - get;
+  const kuriRate = n>0 ? Math.pow(endGet/get, 12/n) - 1 : 0;                       // the chitty's cost as yearly interest
+  const loanGain = n>0 ? Math.round(get - endGet/Math.pow(1+i, n)) : 0;           // + = chitty cheaper, in today's money (fixed 2026-11-17: was EMI interest − discount, unfair to the chitty)
+  const avgAfter = n>0 ? after/n : 0;
+
+  // 2) chitty vs bank FD: chitty money kept in KSFE FD till the end vs the same monthly money in a bank FD/RD
+  const kuriEnd = get*Math.pow(1+mK, n), fdEnd = fv(pays, 0), saveGain = kuriEnd - fdEnd;
+  const lostInt = pays.slice(0,k).reduce((s,p,i)=> s + p*(Math.pow(1+mB, k-1-i)-1), 0); // kuri pays no interest on instalments before the prize
+
+  // 3) chitty + FD trick: pot in KSFE FD with monthly interest; interest pays part of each later instalment
+  const intM = get*fdK/12;
+  const later = pays.slice(k).map(p => Math.max(0, p - intM));
+  const surplus = pays.slice(k).reduce((s,p)=> s + Math.max(0, intM - p), 0);
+  const pocketStream = [...pays.slice(0,k), ...later];
+  const pocket = pocketStream.reduce((a,b)=>a+b,0);
+  const trickBack = get + surplus, trickFd = fv(pocketStream, 0), trickGain = trickBack - trickFd;
+  const avgLater = n>0 ? later.reduce((a,b)=>a+b,0)/n : 0;
+
+  return { k, n, get, paid, before, after, endGet, emi, bankInt, kuriCost, loanGain, avgAfter,
+    kuriEnd, fdEnd, saveGain, lostInt, kuriRate, pays, pocketStream, intM, pocket, trickBack, trickFd, trickGain, avgLater };
+}
+
+// ---------- render ----------
+let ROWS = [], NOW = 1;
+const GAIN = { loan:'loanGain', save:'saveGain', trick:'trickGain' };
+const KEY = g => (g==='trick' && S.full) ? 'saveGain' : GAIN[g]; // checkbox: pay every instalment yourself
+function vsTable(cols, rows){ // rows: [label, a, b, higherWins?]
+  return `<table class="vs"><thead><tr><th></th><th class="us">${cols[0]}</th><th>${cols[1]}</th></tr></thead><tbody>` +
+    rows.map(r => `<tr><td>${r[0]}</td><td class="amt ${r[3]==='a'?'win':''}">${r[1]}</td><td class="amt ${r[3]==='b'?'win':''}">${r[2]}</td></tr>`).join('') + `</tbody></table>`;
+}
+function render(){
+  const inst = +$('inst').value||0, N = Math.min(120, Math.max(3, Math.round(+$('months').value||0)));
+  const sala = inst*N, maxD = (+$('maxd').value||0)/100, comm = (+$('comm').value||0)/100;
+  const fdK = (+$('fdK').value||0)/100, fdB = (+$('fdB').value||0)/100, loanR = (+$('loan').value||0)/100, draw = S.mode==='draw';
+  const now = NOW = Math.min(N, Math.max(1, Math.round(+$('now').value||1)));
+  document.querySelectorAll('#instQ .q').forEach(b=>b.classList.toggle('on', +b.dataset.v===inst));
+  document.querySelectorAll('#monthsQ .q').forEach(b=>b.classList.toggle('on', +b.dataset.v===N));
+  $('heatBox').classList.toggle('hide', draw);
+  $('drawNote').classList.toggle('hide', !draw);
+
+  let disc = schedule(N, sala, maxD, comm, S.heat, S.mode);
+  // "amount paid this month" → last month's auction discount (payment = instalment − dividend, dividend = (discount − commission) / members)
+  const paidV = +$('paid').value||0; let paidMsg = '';
+  if(!draw && paidV>0){
+    if(paidV>inst) paidMsg = t('paidBad');
+    else if(now<2) paidMsg = t('paidNo');
+    else {
+      const D = Math.round(((inst-paidV)*N + comm*sala)/100)*100, pD = D/sala, p0 = disc[now-2]/sala, cap = Math.max(maxD, pD);
+      const f = p0>comm ? (pD-comm)/(p0-comm) : 1;
+      disc = disc.map((d,i)=> i===N-1 ? d : Math.round(Math.max(comm, Math.min(cap, comm + (d/sala-comm)*f))*sala/100)*100);
+      disc[now-2] = D;
+      paidMsg = t('paidOk', inr(D), (pD*100).toFixed(1), now-1);
+    }
+  }
+  $('paidHint').textContent = paidMsg;
+  $('inSum').textContent = `${inr(inst)} × ${N} · ${t(S.mode==='draw'?'draw':'auction')} · ${t(S.type==='ksfe'?'ksfe':'local')} · ${t('month', now)} ✏️`;
+  const out = (k, d=disc) => outcome(k, N, inst, sala, d, comm*sala, fdK, fdB, loanR);
+  const rows = ROWS = disc.map((_,i)=> out(i+1));
+  const ahead = rows.filter(r=>r.k>=now);
+  const bestOf = key => ahead.reduce((x,y)=> y[key] > x[key] ? y : x);
+  // loan: only months that still have payments left make sense as a loan
+  // need money / FD trick are about calling now; saving looks for the best month ahead
+  const best = { loan: rows[now-1], save: draw ? rows[now-1] : bestOf('saveGain'), trick: rows[now-1] };
+  $('bLoan').textContent = t(draw?'baseGet':'baseNow'); $('bTrick').textContent = t(draw?'baseGet':'baseNow'); $('bSave').textContent = t(draw?'baseGet':'baseBest');
+
+  // tiles (headline result for each comparison)
+  const tl = (g, txtWin, txtLose) => { const b = best[g], v = b[KEY(g)]; return `<span class="${v>=0?'pos':'neg'}">${v>=0 ? txtWin(inr(v)) : txtLose(inr(-v))}</span>`; };
+  $('rLoan').innerHTML = best.loan.n>0 ? tl('loan', x=>t('tLoanK',x), x=>t('tLoanW',x)) : '';
+  $('rSave').innerHTML = tl('save', x=>t('tKuri',x), x=>t('tFdW',x));
+  $('rTrick').innerHTML = tl('trick', x=>t('tTrick',x), x=>t('tTrickL',x));
+  [...$('goal').children].forEach(c => c.classList.toggle('on', c.dataset.v===S.goal));
+
+  // month shown in detail
+  const g = S.goal, B = best[g];
+  const cmEl = $('cm'); cmEl.min = now; cmEl.max = N;
+  if(!S.cmTouched) cmEl.value = B.k;
+  const cm = Math.min(N, Math.max(now, +cmEl.value||now));
+  $('cmLab').textContent = t('month', cm) + (cm===now&&now>1 ? t('now_') : '') + (cm===N ? t('last') : '');
+
+  // bid for that month
+  const expBid = disc[cm-1], minB = comm*sala, maxB = draw ? minB : maxD*sala;
+  $('bidBox').classList.toggle('hide', draw || cm===N);
+  if(!S.bidTouched) $('bid').value = expBid;
+  let bid = draw ? minB : (+$('bid').value||0), warn = '';
+  if(bid > maxB){ warn = t('maxB', inr(maxB)); bid = maxB; }
+  if(bid < minB){ warn = t('minB', inr(minB)); bid = minB; }
+  $('bidHint').innerHTML = t('bidHint', Math.round(bid/sala*100), inr(sala), inr(expBid)) + (S.bidTouched ? ` · <button id="useExp">${t('useIt')}</button>` : '') + '.' + warn;
+  const u = $('useExp'); if(u) u.onclick = ()=>{ S.bidTouched=false; render(); };
+  const d2 = disc.slice(); d2[cm-1] = bid;
+  const o = out(cm, d2);
+
+  $('dK').textContent = t(g==='loan'?'kLoan':g==='save'?'kSave':'kTrick');
+  $('dBig').textContent = draw ? t('ifGet', cm) : (g==='save' ? (cm===N ? t('waitEnd') : t('callIn', cm)) : t('ifCall', cm));
+  // break-even discount for a month: below it the chitty wins
+  const breakEven = (k, key) => {
+    const gainAt = dd => { const x = disc.slice(); x[k-1] = dd; return out(k, x)[key]; };
+    if(gainAt(minB) < 0) return 'never';
+    if(gainAt(maxD*sala) >= 0) return 'always';
+    let a=minB, b=maxD*sala; for(let i=0;i<40;i++){ const m=(a+b)/2; if(gainAt(m)>=0) a=m; else b=m; }
+    return Math.floor(a/100)*100;
+  };
+  let badge = '';
+  if(g==='save' && !draw) badge = cm===B.k ? t('best') : t('notBest', B.k);
+  else if(g!=='save' && !draw && cm<N){
+    const be = breakEven(cm, KEY(g));
+    badge = be==='never' ? t('beNever') : be==='always' ? t('beAlways') : t('beLow', inr(be), (be/sala*100).toFixed(1));
+  }
+  // hero: the answer at a glance
+  let h1, h2;
+  if(draw){ const fl = ahead.find(r=>r.saveGain<0); h1 = fl ? t('hDraw', fl.k) : t('hDraw0'); h2 = ''; }
+  else {
+    const r0 = rows[now-1];
+    if(now===N) h1 = '';
+    else { const be = breakEven(now, 'loanGain'), res = r0.loanGain>=0 ? t('resK', inr(r0.loanGain)) : t('resL', inr(-r0.loanGain));
+      h1 = be==='never' ? t('hNowN', now, inr(r0.get)) : be==='always' ? t('hNowA', now, inr(r0.get)) : t('hNow', now, inr(r0.get), inr(be), (be/sala*100).toFixed(1), inr(disc[now-1]), res); }
+    const bs = best.save; h2 = bs.saveGain>=0 ? t('hSaveW', bs.k, inr(bs.saveGain), bs.k===N) : t('hSaveL', inr(-bs.saveGain));
+  }
+  const shareUrl = location.protocol.startsWith('http') ? `${location.origin}${location.pathname}` : ''; // no chitty details in the share (user 2026-11-20)
+  const shareTxt = [t('shInv'), t('shFree'), shareUrl, '— AI Tech Vartha'].filter(Boolean).join('\n');
+  SHARE = `https://wa.me/?text=${encodeURIComponent(shareTxt)}`;
+  $('hres').innerHTML = (h1?`<div>${h1}</div>`:'') + (h2?`<div>${h2}</div>`:'') + `<a class="share" target="_blank" rel="noopener" href="${SHARE}">💬 ${t('share')}</a>`;
+  $('dBadge').textContent = badge; $('dBadge').classList.toggle('hide', !badge);
+
+  // avoid / beat chips (auction only)
+  const gains = ahead.map(r=>r[KEY(g)]);
+  const firstWin = ahead.find(r=>r[KEY(g)]>=0);
+  const worst = ahead.filter(r=> r[KEY(g)] < Math.min(...gains)*0.5 && r[KEY(g)]<0).map(r=>r.k);
+  const chips = draw ? '' : `<div class="mini">${g==='save' && firstWin ? `<span>${t('beatFrom', firstWin.k)}</span>` : ''}</div>`;
+
+  let body = '';
+  if(g==='loan'){
+    if(o.n===0){ body = `<div class="verdict good">${t('loanLast')}</div>`; }
+    else {
+      body = vsTable([t('colKuri'), t('colLoan')], [
+        [t('rGet'), inr(o.get), inr(o.get)],
+        [t('rMonthly'), '~'+inr(o.avgAfter), `${inr(o.emi)} + ~${inr(o.avgAfter)}`],
+        [t('rFor'), t('months_', o.n), t('months_', o.n)],
+        [t('rCost'), `${inr(o.kuriCost)}<br><small class="note">${t('costK')}</small>`, `${inr(o.bankInt)}<br><small class="note">${t('costL')}</small>`],
+        [t('rRate'), `${(o.kuriRate*100).toFixed(1)}%`, `${(loanR*100).toFixed(1)}%`, o.loanGain>=0?'a':'b'] ]) +
+        `<div class="small">${t('loanNote', inr(o.endGet))}</div>` +
+        `<div class="verdict ${o.loanGain>=0?'good':'bad'}">${o.loanGain>=0 ? t('vKuriCheap', inr(o.loanGain)) : t('vLoan', inr(-o.loanGain))}</div>`;
+    }
+  } else if(g==='save'){
+    body = vsTable([t('colKuri'), t('colFd')], [
+      [t('rPaid'), inr(o.paid), inr(o.paid)],
+      [t('rEnd'), inr(o.kuriEnd), inr(o.fdEnd)],
+      [t('rProfit'), inr(o.kuriEnd-o.paid), inr(o.fdEnd-o.paid), o.saveGain>=0?'a':'b'] ]) +
+      `<div class="small">${t('saveNote')}</div>` + (o.lostInt>0 ? `<div class="lost">${t('lostI', cm, inr(o.lostInt))}</div>` : '') +
+      `<div class="verdict ${o.saveGain>=0?'good':'bad'}">${o.saveGain>=0 ? t('vKuri', inr(o.saveGain)) : t('vFd', inr(-o.saveGain))}</div>`;
+  } else if(S.full){
+    const steps = [t('fullS1', cm, inr(o.get)), t('fullS2', inr(o.intM)), o.n>0 ? t('fullS3', o.n, '~'+inr(o.avgAfter)) : '', t('fullS4', inr(o.kuriEnd))].filter(Boolean);
+    body = `<div class="steps4">${steps.map(x=>`<div>${x}</div>`).join('')}</div>` + vsTable([t('colFull'), t('colFd')], [
+        [t('rPocket'), inr(o.paid), inr(o.paid)],
+        [t('rBack'), inr(o.kuriEnd), inr(o.fdEnd)],
+        [t('rProfit'), inr(o.kuriEnd-o.paid), inr(o.fdEnd-o.paid), o.saveGain>=0?'a':'b'] ]) +
+      `<div class="small">${t('saveNote')}</div>` + (o.lostInt>0 ? `<div class="lost">${t('lostI', cm, inr(o.lostInt))}</div>` : '') +
+      `<div class="verdict ${o.saveGain>=0?'good':'bad'}">${o.saveGain>=0 ? t('vKuri', inr(o.saveGain)) : t('vFd', inr(-o.saveGain))}</div>`;
+  } else {
+    const steps = o.n>0 ? t('trickSteps', cm, inr(o.get), inr(o.intM), '~'+inr(o.avgAfter), '~'+inr(o.avgLater), o.n) : [t('trickSteps', cm, inr(o.get), inr(o.intM), '', '', 0)[0]];
+    if(draw) steps[0] = t('ifGetStep', cm, inr(o.get));
+    body = `<div class="steps4">${steps.map(s=>`<div>${s}</div>`).join('')}</div>` +
+      (o.n>0 && o.avgLater < 1 ? `<div class="verdict good">${t('trickFree')}</div>` : '') +
+      vsTable([t('colTrick'), t('colFd')], [
+        [t('rPocket'), inr(o.pocket), inr(o.pocket)],
+        [t('rBack'), inr(o.trickBack), inr(o.trickFd)],
+        [t('rProfit'), inr(o.trickBack-o.pocket), inr(o.trickFd-o.pocket), o.trickGain>=0?'a':'b'] ]) +
+      `<div class="small">${t('trickNote')}</div>` +
+      `<div class="verdict ${o.trickGain>=0?'good':'bad'}">${o.trickGain>=0 ? t('vTrick', inr(o.trickGain)) : t('vFd', inr(-o.trickGain))}</div>` +
+'';
+  }
+  if(g==='trick' && !draw) body = `<label class="fullck"><input type="checkbox" id="fullCk" ${S.full?'checked':''}> ${t('fullCk')}</label>` + body;
+  // yearly rate of this plan (IRR of the monthly cash flows), shown big
+  const irr = fl => { let lo=-0.05, hi=0.08; const npv = m => fl.reduce((a,f,i)=> a + f/Math.pow(1+m,i), 0); if(npv(lo)*npv(hi) > 0) return null; for(let i=0;i<80;i++){ const m=(lo+hi)/2; (npv(m)>0) ? lo=m : hi=m; } return (Math.pow(1+(lo+hi)/2,12)-1)*100; };
+  let rate = null, cmp = 0, rateKey = '';
+  if(g==='loan'){ if(o.n>0){ rate = (Math.pow(o.endGet/o.get, 12/o.n)-1)*100; cmp = loanR*100; rateKey = 'rateLoan'; } }
+  else { const stream = (g==='trick' && !S.full) ? o.pocketStream : o.pays, back = (g==='trick' && !S.full) ? o.trickBack : o.kuriEnd;
+    const fl = stream.map(x=>-x); fl[fl.length-1] += back; rate = irr(fl); cmp = fdB*100; rateKey = 'rateSave'; }
+  const good = rate===null ? null : (g==='loan' ? rate <= cmp : rate >= cmp);
+  $('rate').innerHTML = rate===null ? '' : `<div class="rbig ${good?'pos':'neg'}">≈ ${rate.toFixed(1)}%<small> / ${t('yr')}</small></div><div class="rsub">${t(rateKey, cmp.toFixed(1))}</div>`;
+  $('dBody').innerHTML = body + chips;
+  { const vv = $('dBody').querySelectorAll('.verdict'), v0 = vv[vv.length-1]; const st = $('sticky');
+    st.innerHTML = `<b>${t('month', cm)}</b>${rate!==null ? ` · <span class="${good?'pos':'neg'}">≈ ${rate.toFixed(1)}%</span>` : ''} · ${(v0?v0.textContent:'').replace(/\s+/g,' ').trim().slice(0,46)}`;
+    st.classList.toggle('hide', !phone()); st.onclick = () => $('detail').scrollIntoView({behavior:'smooth', block:'start'}); }
+  { const vs = $('dBody').querySelectorAll('.verdict'), v = vs[vs.length-1]; // father & son photo: happy when the kuri wins, grave when it loses
+    if(v && (v.classList.contains('good') || v.classList.contains('bad'))) v.insertAdjacentHTML('afterbegin', `<img class="mood" src="assets/fs-${v.classList.contains('good')?'happy':'grave'}.jpg" alt="">`);
+    if(v) v.insertAdjacentHTML('beforeend', `<a class="share vshare" target="_blank" rel="noopener" href="${SHARE}">💬 ${t('share2')}</a>`);
+    if(v && phone()){ const box = $('dBody'), ck = box.querySelector('.fullck'), d = document.createElement('details'); d.className = 'more phonemore';
+      d.innerHTML = `<summary>${t('seeMore')}</summary>`; [...box.children].forEach(c => { if(c!==v && c!==ck) d.appendChild(c); });
+      box.innerHTML = ''; if(ck) box.appendChild(ck); box.appendChild(v); box.appendChild(d);
+      const fc2 = $('fullCk'); if(fc2) fc2.onchange = () => { S.full = fc2.checked; S.cmTouched=false; render(); }; } }
+  const fc = $('fullCk'); if(fc) fc.onchange = () => { S.full = fc.checked; S.cmTouched=false; render(); };
+
+  // chart + table follow the chosen comparison
+  $('chartNote').textContent = t(g==='loan'?'cnLoan':g==='save'||S.full?'cnSave':'cnTrick') + t('cnTap');
+  $('thV').textContent = t('thV');
+  const shown = rows.map(r => r.k===cm ? o : r);
+  $('tbl').innerHTML = shown.map(r=>{ const v = r[KEY(g)]; if(g==='loan' && r.n===0) return `<tr data-k="${r.k}" class="${r.k===cm?'sel':''}"><td>${r.k}</td><td class="hide-sm">${inr(disc[r.k-1])}</td><td>${inr(r.get)}</td><td>—</td></tr>`; return `<tr data-k="${r.k}" class="${r.k===cm?'sel':''}${r.k<now?' past':''}"><td>${r.k}</td><td class="hide-sm">${inr(r.k===cm ? bid : disc[r.k-1])}</td><td>${inr(r.get)}</td>
+      <td class="${v<0?'neg':'pos'}">${v>=0?'+':''}${inr(v)}</td></tr>`; }).join('');
+  drawChart(shown.map(r=> g==='loan' && r.n===0 ? 0 : r[KEY(g)]), cm, now);
+}
+$('tbl').addEventListener('click', e => { const tr = e.target.closest('tr'); if(tr && !tr.classList.contains('past')) pickMonth(+tr.dataset.k); });
+
+function drawChart(vals, cm, now){
+  const svg = $('chart'), W = svg.clientWidth || 600, H = svg.clientHeight || 170, P = {l:44,r:8,t:26,b:22};
+  const hi = Math.max(0,...vals), lo = Math.min(0,...vals), span = (hi-lo)||1;
+  const bw = (W-P.l-P.r)/vals.length, y = v => P.t + (H-P.t-P.b)*(hi-v)/span;
+  const k = v => (Math.abs(v)>=1e5 ? (v/1e5).toFixed(1)+'L' : Math.round(v/1e3)+'k');
+  let s = '';
+  vals.forEach((v,i)=>{
+    const x=P.l+i*bw, m=i+1;
+    if(m===cm) s += `<rect x="${x}" y="${P.t-6}" width="${bw}" height="${H-P.b-P.t+6}" rx="3" fill="var(--brand-soft)" stroke="var(--brand)" stroke-width="1.5"/>`;
+    s += `<rect x="${x+1}" y="${Math.min(y(v),y(0))}" width="${Math.max(1,bw-2)}" height="${Math.max(1,Math.abs(y(0)-y(v)))}" rx="2" fill="var(--${v>=0?'save':'bad'})" opacity="${m<now?.25:1}"/>`;
+    s += `<rect data-k="${m}" x="${x}" y="0" width="${bw}" height="${H}" fill="transparent"/>`;
+  });
+  s += `<line x1="${P.l}" x2="${W-P.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--muted)" stroke-dasharray="3 3"/>
+    <text x="${P.l-6}" y="${y(0)+4}" font-size="11" text-anchor="end" fill="var(--muted)">0</text>`;
+  if(hi>0 && y(0)-y(hi) > 18) s += `<text x="${P.l-6}" y="${y(hi)+8}" font-size="11" text-anchor="end" fill="var(--save)">+${k(hi)}</text>`;
+  if(lo<0 && y(lo)-y(0) > 18) s += `<text x="${P.l-6}" y="${y(lo)}" font-size="11" text-anchor="end" fill="var(--bad)">−${k(-lo)}</text>`;
+  const step = Math.ceil(vals.length/10);
+  vals.forEach((_,i)=>{ if(i%step===0 || i===vals.length-1) s += `<text x="${P.l+i*bw+bw/2}" y="${H-6}" font-size="11" text-anchor="middle" fill="var(--muted)">${i+1}</text>`; });
+  if(cm>=1 && cm<=vals.length){ const v = vals[cm-1], x = P.l+(cm-1)*bw+bw/2, ty = 12;
+    s += `<text x="${Math.min(W-30,Math.max(P.l+20,x))}" y="${ty}" font-size="12" font-weight="700" text-anchor="middle" fill="var(--${v>=0?'save':'bad'})">${v>=0?'+':'−'}₹${k(Math.abs(v))}</text>`; }
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.innerHTML = s; CH = { l:P.l, bw, n:vals.length, W };
+}
+let CH = null, dragging = false, rafPick = 0;
+function monthAt(e){ const r = $('chart').getBoundingClientRect(), x = (e.clientX - r.left) * (CH.W / r.width); return Math.max(1, Math.min(CH.n, Math.floor((x - CH.l) / CH.bw) + 1)); }
+function pickAt(e){ if(!CH) return; const m = Math.max(NOW, monthAt(e)); if(m === +$('cm').value) return; cancelAnimationFrame(rafPick); rafPick = requestAnimationFrame(() => pickMonth(m)); }
+$('chart').addEventListener('pointerdown', e => { dragging = true; $('chart').setPointerCapture(e.pointerId); pickAt(e); });
+$('chart').addEventListener('pointermove', e => { if(dragging) pickAt(e); });
+['pointerup','pointercancel'].forEach(ev => $('chart').addEventListener(ev, () => dragging = false));
+
+addEventListener('resize', ()=>render());
+// ---------- start helper (first visit + button) ----------
+const HD = { maxd:30, comm:5, gst:18, loan:16, fdK:7.7, fdB:6.5 }; // example rates
+const HMAP = { hMaxd:'maxd', hComm:'comm', hGst:'gst', hLoan:'loan', hFdK:'fdK', hFdB:'fdB' };
+let hStep = 1, hType = 'ksfe', hMode = 'auction';
+function hSeg(id, v){ [...$(id).children].forEach(c => c.classList.toggle('on', c.dataset.v===v)); }
+function hShow(n){ hStep = n; document.querySelectorAll('#hlp .hstep').forEach(el => el.classList.toggle('hide', +el.dataset.s !== n));
+  [...$('hDots').children].forEach((d,i) => d.classList.toggle('on', i < n));
+  $('hBack').style.visibility = n>1 ? 'visible' : 'hidden'; $('hNext').classList.toggle('hide', n===3); }
+function hOpen(){ $('hInst').value = $('inst').value; $('hMonths').value = $('months').value; $('hNow').value = $('now').value;
+  hType = S.type; hMode = S.mode; hSeg('hType', hType); hSeg('hMode', hMode);
+  for(const [h,m] of Object.entries(HMAP)) $(h).value = $(m).value;
+  hSeg('hGoal', S.goal); hShow(1); $('hlp').classList.remove('hide'); document.body.style.overflow = 'hidden'; }
+function hClose(){ $('hlp').classList.add('hide'); document.body.style.overflow = ''; try{ localStorage.setItem('kuri-helped','1'); }catch(e){} }
+function hApply(goal){
+  if(S.type !== hType) $('type').querySelector(`[data-v="${hType}"]`).click();
+  if(S.mode !== hMode) $('mode').querySelector(`[data-v="${hMode}"]`).click();
+  const N = Math.min(120, Math.max(5, +$('hMonths').value || +$('months').value));
+  $('inst').value = Math.max(100, +$('hInst').value || +$('inst').value); $('months').value = N;
+  $('now').value = Math.min(N, Math.max(1, +$('hNow').value || 1));
+  for(const [h,m] of Object.entries(HMAP)){ const v = parseFloat($(h).value); if(isFinite(v) && v >= 0) $(m).value = v; }
+  S.bidTouched = false; S.cmTouched = false; hClose();
+  $('goal').querySelector(`[data-v="${goal}"]`).click(); render();
+  setTimeout(() => $('detail').scrollIntoView({behavior:'smooth', block:'start'}), 80);
+}
+$('hlpOpen').addEventListener('click', e => { e.preventDefault(); hOpen(); });
+$('hSkip').onclick = hClose;
+$('hlp').addEventListener('click', e => { if(e.target === $('hlp')) hClose(); });
+addEventListener('keydown', e => { if(e.key === 'Escape' && !$('hlp').classList.contains('hide')) hClose(); });
+$('hBack').onclick = () => hShow(Math.max(1, hStep-1));
+$('hNext').onclick = () => hShow(Math.min(3, hStep+1));
+$('hInstQ').addEventListener('click', e => { const b = e.target.closest('.q'); if(b) $('hInst').value = b.dataset.v; });
+$('hType').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; hType = b.dataset.v; hSeg('hType', hType);
+  $('hComm').value = hType==='ksfe' ? HD.comm : 0; $('hGst').value = hType==='ksfe' ? HD.gst : 0; });
+$('hMode').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; hMode = b.dataset.v; hSeg('hMode', hMode); });
+$('hReset').onclick = () => { for(const [h,m] of Object.entries(HMAP)) $(h).value = (hType==='local' && (m==='comm'||m==='gst')) ? 0 : HD[m]; };
+$('hGoal').addEventListener('click', e => { const b = e.target.closest('button'); if(b) hApply(b.dataset.v); });
+
+{ const num = (k,lo,hi) => { const v = parseInt(QP.get(k),10); return v>=lo && v<=hi ? v : null; };
+  const i = num('i',100,10000000), n = num('n',5,120), m = num('m',1,120);
+  if(i) $('inst').value = i; if(n) $('months').value = n; if(m && m <= (n || +$('months').value)) $('now').value = m;
+  const g = QP.get('g'); if(['loan','save','trick'].includes(g)) S.goal = g; }
+applyLang();
+{ let seen = false; try{ seen = !!localStorage.getItem('kuri-helped'); }catch(e){}
+  if(!seen && !navigator.webdriver && !QP.has('i')) hOpen(); }
+</script>
+</body>
+</html>

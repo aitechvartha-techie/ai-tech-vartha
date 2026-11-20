@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Tech Vartha Apps</title>
+<meta name="description" content="AI Tech Vartha-യുടെ ഫ്രീ ആപ്പുകളും ടൂളുകളും. Free apps and tools from AI Tech Vartha.">
+<meta property="og:title" content="AI Tech Vartha · ഫ്രീ ആപ്പുകൾ">
+<meta property="og:description" content="ഫ്രീ ആണ്, ലോഗിൻ വേണ്ട. Free, no login.">
+<meta property="og:image" content="assets/logo.png">
+<link rel="icon" href="assets/logo.png">
+<link rel="apple-touch-icon" href="assets/logo.png">
+<meta name="theme-color" content="#0f766e">
+<style>
+:root{
+  --bg:#f6f8f7; --card:#ffffff; --ink:#10201d; --mute:#5b6b67; --line:#e1e8e6;
+  --brand:#0f766e; --brand2:#14b8a6; --chip:#e7f5f2; --new:#f59e0b;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1413; --card:#13201e; --ink:#e7f0ee; --mute:#9db0ab; --line:#22332f;
+    --brand:#2dd4bf; --brand2:#14b8a6; --chip:#163330; --new:#fbbf24;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1413; --card:#13201e; --ink:#e7f0ee; --mute:#9db0ab; --line:#22332f;
+  --brand:#2dd4bf; --brand2:#14b8a6; --chip:#163330; --new:#fbbf24;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans Malayalam","Manjari",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto;padding:28px 16px 40px}
+header{text-align:center}
+.logo{width:76px;height:76px;border-radius:50%;box-shadow:0 4px 18px rgba(15,118,110,.25)}
+h1{font-size:22px;margin:10px 0 2px}
+.sub{color:var(--mute);margin:0;font-size:15px}
+.lang{position:absolute;top:14px;right:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}
+h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:28px 4px 10px;font-weight:600}
+.list{display:flex;flex-direction:column;gap:10px}
+a.app{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;color:inherit;text-decoration:none;transition:transform .12s,border-color .12s}
+a.app:hover{border-color:var(--brand);transform:translateY(-1px)}
+a.app:active{transform:scale(.99)}
+.ico{flex:none;width:48px;height:48px;border-radius:12px;background:var(--chip);display:grid;place-items:center;font-size:26px}
+.txt{flex:1;min-width:0}
+.t{font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.d{color:var(--mute);font-size:14px;margin-top:2px}
+.badge{font-size:11px;font-weight:700;color:#fff;background:var(--new);border-radius:999px;padding:1px 8px}
+.go{flex:none;color:var(--brand);font-size:20px}
+.note{margin:22px 4px 0;color:var(--mute);font-size:13px;text-align:center}
+footer{margin-top:30px;text-align:center}
+.soc{display:flex;justify-content:center;gap:10px;margin-top:10px}
+.soc a{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.soc a:hover{border-color:var(--brand);color:var(--brand)}
+.soc svg{width:20px;height:20px;fill:currentColor}
+.fine{color:var(--mute);font-size:12px;margin-top:14px}
+</style>
+</head>
+<body>
+<button class="lang" id="lang" type="button">English</button>
+<div class="wrap">
+  <header>
+    <img class="logo" src="assets/logo.png" alt="AI Tech Vartha logo" width="76" height="76">
+    <h1>AI Tech Vartha</h1>
+    <p class="sub" data-t="sub"></p>
+  </header>
+
+  <h2 data-t="apps"></h2>
+  <div class="list">
+    <a class="app" href="kuri/">
+      <span class="ico">🪙</span>
+      <span class="txt"><span class="t"><span data-t="kuriT"></span><span class="badge" data-t="new"></span></span><span class="d" data-t="kuriD"></span></span>
+      <span class="go">›</span>
+    </a>
+    <a class="app" href="https://aitechvartha-pdf.pages.dev">
+      <span class="ico">📄</span>
+      <span class="txt"><span class="t" data-t="pdfT"></span><span class="d" data-t="pdfD"></span></span>
+      <span class="go">›</span>
+    </a>
+    <a class="app" href="https://aitechvartha-cartoon.pages.dev">
+      <span class="ico">🎬</span>
+      <span class="txt"><span class="t" data-t="toonT"></span><span class="d" data-t="toonD"></span></span>
+      <span class="go">›</span>
+    </a>
+    <a class="app" href="https://aitechvartha-techie.github.io/album-picker/">
+      <span class="ico">💍</span>
+      <span class="txt"><span class="t" data-t="albumT"></span><span class="d" data-t="albumD"></span></span>
+      <span class="go">›</span>
+    </a>
+    <a class="app" href="bgm/">
+      <span class="ico">🥁</span>
+      <span class="txt"><span class="t" data-t="bgmT"></span><span class="d" data-t="bgmD"></span></span>
+      <span class="go">›</span>
+    </a>
+  </div>
+
+  <h2 data-t="packs"></h2>
+  <div class="list">
+    <a class="app" href="https://github.com/aitechvartha-techie/ai-tech-vartha/tree/main/resume">
+      <span class="ico">📝</span>
+      <span class="txt"><span class="t" data-t="resT"></span><span class="d" data-t="resD"></span></span>
+      <span class="go">›</span>
+    </a>
+    <a class="app" href="https://github.com/aitechvartha-techie/ai-tech-vartha/tree/main/job">
+      <span class="ico">💼</span>
+      <span class="txt"><span class="t" data-t="jobT"></span><span class="d" data-t="jobD"></span></span>
+      <span class="go">›</span>
+    </a>
+    <a class="app" href="https://github.com/aitechvartha-techie/ai-tech-vartha/tree/main/loop">
+      <span class="ico">🔁</span>
+      <span class="txt"><span class="t" data-t="loopT"></span><span class="d" data-t="loopD"></span></span>
+      <span class="go">›</span>
+    </a>
+  </div>
+
+  <p class="note" data-t="note"></p>
+
+  <footer>
+    <div data-t="follow"></div>
+    <div class="soc">
+      <a href="https://www.instagram.com/ai_tech_vartha/" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zm0 4.8a5 5 0 100 10 5 5 0 000-10zm0 8.2a3.2 3.2 0 110-6.4 3.2 3.2 0 010 6.4zm5.2-9.6a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z"/></svg></a>
+      <a href="https://www.youtube.com/@aitechvartha" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
+      <a href="https://www.facebook.com/1419285704602314" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12a12 12 0 10-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0024 12z"/></svg></a>
+    </div>
+    <p class="fine" data-t="fine"></p>
+  </footer>
+</div>
+<script>
+const T = {
+  ml: {
+    sub: 'ഫ്രീ ആപ്പുകളും ടൂളുകളും · ലോഗിൻ വേണ്ട',
+    apps: 'ആപ്പുകൾ', packs: 'ഫ്രീ പാക്കുകൾ', new: 'പുതിയത്',
+    kuriT: 'കുറി കാൽക്കുലേറ്റർ', kuriD: 'ചിട്ടി ഏത് മാസം വിളിക്കണം? ലോണിനെക്കാളും FD-യെക്കാളും ലാഭമാണോ എന്ന് രൂപയിൽ കാണാം',
+    pdfT: 'PDF ടൂളുകൾ', pdfD: 'PDF ചേർക്കാം, മുറിക്കാം, ചെറുതാക്കാം. ഫയൽ നിങ്ങളുടെ ഫോണിൽ നിന്ന് പുറത്തുപോകില്ല',
+    toonT: 'കാർട്ടൂൺ സ്റ്റുഡിയോ', toonD: 'സ്വന്തം ശബ്ദത്തിൽ സംസാരിക്കുന്ന കാർട്ടൂൺ വീഡിയോ ഉണ്ടാക്കാം',
+    albumT: 'ആൽബം പിക്കർ', albumD: 'ആയിരക്കണക്കിന് കല്യാണ ഫോട്ടോകളിൽ നിന്ന് ആൽബത്തിനുള്ള നല്ല ഫോട്ടോകൾ തിരഞ്ഞെടുക്കാം',
+    bgmT: 'മാസ് BGM മിക്സർ', bgmD: 'ഹീറോ എൻട്രിക്കും വില്ലനും പറ്റിയ മാസ് BGM ബ്രൗസറിൽ ഉണ്ടാക്കാം',
+    resT: 'റെസ്യൂമേ സ്കിൽ (Claude)', resD: 'കുറച്ച് ചോദ്യങ്ങൾക്ക് ഉത്തരം നൽകിയാൽ PDF-ഉം Word-ഉം റെസ്യൂമേ റെഡി',
+    jobT: 'ജോബ് പാക്ക്', jobD: 'AI കാലത്ത് പിടിച്ചുനിൽക്കാൻ നിങ്ങളുടെ മേഖലയ്ക്കുള്ള ഫ്രീ കോഴ്സുകൾ',
+    loopT: 'ലൂപ്പ് പാക്ക്', loopD: 'AI ജോലി പകുതിയിൽ നിർത്താതെ മുഴുവൻ ചെയ്യിക്കാൻ',
+    note: 'പുതിയ ആപ്പുകൾ വരുമ്പോൾ ഇവിടെ ചേർക്കും.',
+    follow: 'പുതിയ AI ടൂളുകൾക്ക് follow ചെയ്യൂ',
+    fine: 'എല്ലാം ഫ്രീ. സാമ്പത്തിക/നിയമ ഉപദേശമല്ല; കണക്കുകൾ ഏകദേശമാണ്.'
+  },
+  en: {
+    sub: 'Free apps and tools · no login',
+    apps: 'Apps', packs: 'Free packs', new: 'New',
+    kuriT: 'Kuri Calculator', kuriD: 'Which month should you take your chitty? See in rupees if it beats a loan or an FD',
+    pdfT: 'PDF Tools', pdfD: 'Merge, split and compress PDFs. Your files never leave your device',
+    toonT: 'Cartoon Studio', toonD: 'Make talking cartoon videos with your own voice',
+    albumT: 'Album Picker', albumD: 'Pick the best album photos from thousands of wedding shots',
+    bgmT: 'Mass BGM Mixer', bgmD: 'Make mass BGM for hero entries and villains, right in the browser',
+    resT: 'Resume skill (Claude)', resD: 'Answer a few questions, get a resume as PDF and Word',
+    jobT: 'JOB pack', jobD: 'Free courses for your field to stay ahead in the AI era',
+    loopT: 'LOOP pack', loopD: 'Make AI finish the whole job instead of stopping halfway',
+    note: 'New apps get added here.',
+    follow: 'Follow for new AI tools',
+    fine: 'All free. Not financial or legal advice; numbers are estimates.'
+  }
+};
+let L = 'ml';
+try { L = localStorage.getItem('atv-lang') || 'ml'; } catch (e) {}
+function apply(){
+  document.documentElement.lang = L;
+  document.querySelectorAll('[data-t]').forEach(el => { el.textContent = T[L][el.dataset.t]; });
+  document.getElementById('lang').textContent = L === 'ml' ? 'English' : 'മലയാളം';
+}
+document.getElementById('lang').onclick = () => {
+  L = L === 'ml' ? 'en' : 'ml';
+  try { localStorage.setItem('atv-lang', L); } catch (e) {}
+  apply();
+};
+apply();
+</script>
+</body>
+</html>
