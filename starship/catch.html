@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ml"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Catch the Starship</title>
+<meta name="description" content="One tap: close the tower's chopsticks at the exact moment and catch SpaceX Starship, like Flight 15 did in November 2026.">
+<style>
+:root{--bg:#05070f;--ink:#eef2ff;--mute:#9aa3c0;--acc:#ffb020;--ok:#3ddc84;--bad:#ff4d5e;--card:rgba(14,18,36,.95)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,"Noto Sans Malayalam",sans-serif;overflow:hidden;touch-action:none;user-select:none}
+#wrap{position:relative;height:100%;max-width:56.25vh;margin:0 auto}
+canvas{display:block;width:100%;height:100%}
+#lang{position:absolute;top:10px;right:12px;background:#fff2;border:1px solid #fff4;color:var(--ink);border-radius:8px;padding:3px 8px;font:inherit;font-size:12px;font-weight:700}
+.card{position:absolute;left:14px;right:14px;top:50%;transform:translateY(-50%);background:var(--card);border:1px solid #ffffff1f;border-radius:18px;padding:20px 18px;text-align:center;display:none;max-height:88%;overflow:auto}
+.card.on{display:block}
+.card h1{font-size:25px;margin:0 0 8px;color:var(--acc)}
+.card p{margin:8px 0;line-height:1.55;font-size:15px}
+.tag{font-size:12px;color:var(--mute);letter-spacing:.05em;text-transform:uppercase}
+.big{font-size:44px;font-weight:900;color:var(--ok);line-height:1.1}
+.row{display:flex;justify-content:center;gap:18px;margin:6px 0}
+.row div{min-width:70px}.row b{display:block;font-size:20px}
+q{display:block;font-style:italic;color:#ffd98a;margin:10px 0 2px}
+.btn{display:inline-block;margin-top:12px;background:var(--acc);color:#1a1200;border:0;border-radius:12px;padding:13px 28px;font:inherit;font-weight:800;font-size:17px}
+.btn.alt{background:#ffffff1a;color:var(--ink);font-size:14px;padding:10px 18px}
+.foot{font-size:11px;color:var(--mute);margin-top:12px;line-height:1.45}
+</style></head><body>
+<div id="wrap"><canvas id="c"></canvas><button id="lang">EN</button><div class="card" id="card"></div></div>
+<script>
+const T={
+ml:{title:"Starship-നെ പിടിക്കാമോ?",
+fact:"നവംബർ 2026 · Flight 15: ബഹിരാകാശത്തു നിന്ന് തിരിച്ചുവന്ന Starship-നെ SpaceX-ന്റെ ടവർ ഇരുമ്പ് കൈകൾ (chopsticks) കൊണ്ട് പിടിച്ചു. ലോകത്ത് ആദ്യമായി.",
+how:"Ship കൈകൾക്കിടയിൽ <b>കൃത്യം</b> എത്തുമ്പോൾ <b>ഒറ്റ TAP</b>. ഓരോ മില്ലിസെക്കന്റും പ്രധാനം! ഓരോ catch കഴിയുമ്പോഴും വേഗം കൂടും. 3 ship മാത്രം.",
+play:"കളിക്കാം 🚀",again:"വീണ്ടും 🚀",share:"കൂട്ടുകാരെ challenge ചെയ്യൂ",story:"Mission മുഴുവൻ കാണാം (4 levels) →",
+tapNow:"TAP = കൈകൾ അടയ്ക്കും",early:"നേരത്തെ",late:"വൈകി",ms:"ms",perfect:"PERFECT!",great:"GREAT",good:"OK",miss:"MISS",offside:"വശത്തേക്ക് മാറി!",
+over:"Game over",score:"Score",best:"Best",catches:"Catches",bestMs:"Best timing",newBest:"🏆 പുതിയ റെക്കോർഡ്!",
+rank:["Trainee","Launch crew","Flight director","Mechazilla master"],
+real:"യഥാർത്ഥ Ship 42 പിടിച്ചത് launch കഴിഞ്ഞ് ഏകദേശം 22.5 മണിക്കൂറിനു ശേഷം. Booster-നെ പിടിക്കാനായില്ല: fuel കുറവ് alarm വന്നതോടെ അത് കടലിൽ ഇറങ്ങി.",
+why:"എന്തിനാണ് പിടിക്കുന്നത്? പിടിച്ച ship വീണ്ടും പറത്താം, വിമാനം പോലെ. റോക്കറ്റ് യാത്രയുടെ ചെലവ് കുത്തനെ കുറയും.",
+quoteBy:"SpaceX webcast, Dan Huot",
+follow:"ഇതുപോലുള്ള tech games-ന്: @ai_tech_vartha",
+sh1:"ഞാൻ Starship-നെ ",sh2:" തവണ പിടിച്ചു! Best timing ",sh3:" ms. നിനക്ക് പറ്റുമോ? 🚀",
+src:"വിവരങ്ങൾ: Space.com, Wikipedia (Starship Flight 15). Fan-made game, SpaceX-മായി ബന്ധമില്ല."},
+en:{title:"Can you catch Starship?",
+fact:"November 2026 · Flight 15: SpaceX's tower caught a Starship coming back from orbit with its steel arms (the chopsticks). A world first.",
+how:"<b>One TAP</b> the moment the ship is <b>exactly</b> between the arms. Every millisecond counts! It gets faster after each catch. You have 3 ships.",
+play:"Play 🚀",again:"Again 🚀",share:"Challenge a friend",story:"Watch the full mission (4 levels) →",
+tapNow:"TAP = close the arms",early:"early",late:"late",ms:"ms",perfect:"PERFECT!",great:"GREAT",good:"OK",miss:"MISS",offside:"Off to the side!",
+over:"Game over",score:"Score",best:"Best",catches:"Catches",bestMs:"Best timing",newBest:"🏆 New record!",
+rank:["Trainee","Launch crew","Flight director","Mechazilla master"],
+real:"The real Ship 42 was caught about 22.5 hours after launch. The booster wasn't: a low-fuel alarm sent it to a splashdown at sea.",
+why:"Why catch it? A caught ship can fly again, like an airliner, so rocket trips get far cheaper.",
+quoteBy:"SpaceX webcast, Dan Huot",
+follow:"More tech games: @ai_tech_vartha",
+sh1:"I caught Starship ",sh2:" times! Best timing ",sh3:" ms. Can you? 🚀",
+src:"Facts: Space.com, Wikipedia (Starship Flight 15). Fan-made game, not affiliated with SpaceX."}};
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let L=store.get("ssLang","ml");const t=k=>T[L][k];
+const QUOTE="We caught a Starship, and now everything changes.";
+
+const cv=document.getElementById("c"),g=cv.getContext("2d"),card=document.getElementById("card"),$=id=>document.getElementById(id);
+const W=360,H=640,TX=180,ARM=430;let S=1;
+function fit(){const r=cv.getBoundingClientRect(),d=devicePixelRatio||1;cv.width=r.width*d;cv.height=r.height*d;S=cv.width/W;}
+addEventListener("resize",fit);
+
+let AC;function snd(f=440,d=.08,type="square",v=.05){try{AC=AC||new AudioContext();const o=AC.createOscillator(),gg=AC.createGain();o.type=type;o.frequency.value=f;gg.gain.value=v;gg.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.connect(gg).connect(AC.destination);o.start();o.stop(AC.currentTime+d);}catch(e){}}
+
+let mode="menu",score=0,lives=3,round=0,streak=0,catches=0,bestMs=null,parts=[],msg=null,sh={},stars=[],shake=0;
+for(let i=0;i<90;i++)stars.push([Math.random()*W,Math.random()*360,Math.random()*1.4+.3]);
+
+function newShip(){round++;
+const v=Math.min(430,175*Math.pow(1.09,round-1));            // descent speed at the arms (px/s)
+const sway=round>=3?Math.min(26,(round-2)*6):0;               // side drift from round 3
+sh={y:-70,v,sway,ph:Math.random()*6.28,w:1.6+Math.random()*.8,t:0,closed:0,closing:false,done:false,res:null,x:TX,delay:.5+Math.random()*.6};}
+function start(){score=0;lives=3;round=0;streak=0;catches=0;bestMs=null;parts=[];hide();mode="play";newShip();}
+
+// belly flop at the top, flip + landing burn around y 150-250, then steady descent
+function shipAng(y){if(y<150)return -Math.PI/2;if(y>250)return 0;return -Math.PI/2*(1-(y-150)/100);}
+
+function tap(){if(mode!=="play"||sh.closing||sh.done||sh.t<sh.delay)return;
+sh.closing=true;snd(240,.08,"square",.06);
+const dy=sh.y-ARM,dx=sh.x-TX,msOff=Math.round(Math.abs(dy)/sh.v*1000);
+if(Math.abs(dy)<=16&&Math.abs(dx)<=12){
+ const q=Math.abs(dy)<=3?"perfect":Math.abs(dy)<=8?"great":"good";
+ const pts={perfect:100,great:60,good:30}[q]+streak*10+(round-1)*5;
+ score+=pts;streak++;catches++;bestMs=bestMs==null?msOff:Math.min(bestMs,msOff);
+ sh.res={ok:true,q,msOff,early:dy<0,pts};sh.y=ARM;sh.x=TX;
+ flash((q==="perfect"?t("perfect"):t(q))+"  +"+pts,q==="perfect"?"#3ddc84":"#ffb020",msOff+" "+t("ms")+" "+(dy<0?t("early"):t("late")));
+ snd(q==="perfect"?1046:784,.18,"triangle",.08);puff(TX,ARM,18,"#ffd27a",90);
+}else{
+ sh.res={ok:false,msOff,early:dy<0};streak=0;
+ flash(t("miss"),"#ff4d5e",Math.abs(dx)>12&&Math.abs(dy)<=16?t("offside"):msOff+" "+t("ms")+" "+(dy<0?t("early"):t("late")));
+}}
+cv.addEventListener("pointerdown",e=>{e.preventDefault();tap();});
+addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();if(mode==="play")tap();}});
+
+function flash(s,c,sub){msg={s,c,sub,t:1.3};}
+function puff(x,y,n,c,sp=60){for(let i=0;i<n;i++)parts.push({x,y,vx:(Math.random()-.5)*sp,vy:(Math.random()-.3)*sp,l:1,c,r:2+Math.random()*4});}
+function hide(){card.classList.remove("on");}
+function show(html){card.innerHTML=html;card.classList.add("on");}
+function btn(label,fn,alt){const id="b"+Math.random().toString(36).slice(2,7);setTimeout(()=>{const b=$(id);if(b)b.onclick=fn;},0);return `<button class="btn${alt?" alt":""}" id="${id}">${label}</button>`;}
+
+function menu(){mode="menu";const best=+store.get("ssBest",0);
+show(`<div class="tag">AI Tech Vartha · Space game</div><h1>${t("title")}</h1><p>${t("fact")}</p><p>${t("how")}</p>${best?`<p class="tag">${t("best")}: ${best}</p>`:""}${btn(t("play"),start)}<div class="foot">${t("src")}</div>`);}
+function gameOver(){mode="over";const prev=+store.get("ssBest",0),nb=score>prev;if(nb)store.set("ssBest",score);
+const r=t("rank")[Math.min(3,Math.floor(catches/4))];
+show(`<div class="tag">${t("over")}</div>${nb&&score>0?`<p style="color:var(--acc);font-weight:800">${t("newBest")}</p>`:""}<div class="big">${score}</div><p><b>${r}</b></p>
+<div class="row"><div><span class="tag">${t("catches")}</span><b>${catches}</b></div><div><span class="tag">${t("bestMs")}</span><b>${bestMs==null?"–":bestMs+" ms"}</b></div><div><span class="tag">${t("best")}</span><b>${Math.max(prev,score)}</b></div></div>
+${btn(t("again"),start)} ${catches?btn(t("share"),share,1):""}
+<p style="margin-top:16px">${t("real")}</p><q>${QUOTE}</q><div class="foot">— ${t("quoteBy")}</div><p>${t("why")}</p>
+<p><a href="index.html" style="color:var(--acc)">${t("story")}</a></p><p class="foot">${t("follow")}<br>${t("src")}</p>`);}
+function share(){const txt=t("sh1")+catches+t("sh2")+(bestMs??"–")+t("sh3"),url=location.href.split("?")[0];
+if(navigator.share)navigator.share({title:t("title"),text:txt,url}).catch(()=>{});else{try{navigator.clipboard.writeText(txt+" "+url);flash("Link copied ✓","#3ddc84");}catch(e){}}}
+$("lang").onclick=()=>{L=L==="ml"?"en":"ml";store.set("ssLang",L);$("lang").textContent=L==="ml"?"EN":"മല";if(mode==="menu")menu();if(mode==="over")gameOver();};
+$("lang").textContent=L==="ml"?"EN":"മല";
+
+function ship(x,y,ang,sc,flame){g.save();g.translate(x,y);g.rotate(ang);g.scale(sc,sc);
+if(flame){for(let i=0;i<3;i++){g.fillStyle=i?"#ffd27a":"#ff7a1a";g.globalAlpha=.85;g.beginPath();g.moveTo(-6+i*2,44);g.lineTo(6-i*2,44);g.lineTo(0,44+(30-i*8)*(0.8+Math.random()*.4));g.fill();}g.globalAlpha=1;}
+const gr=g.createLinearGradient(-9,0,9,0);gr.addColorStop(0,"#8d96a8");gr.addColorStop(.5,"#e9edf5");gr.addColorStop(1,"#7b8496");
+g.fillStyle=gr;g.beginPath();g.moveTo(-9,44);g.lineTo(-9,-22);g.quadraticCurveTo(-9,-44,0,-48);g.quadraticCurveTo(9,-44,9,-22);g.lineTo(9,44);g.closePath();g.fill();
+g.fillStyle="#15171d";g.beginPath();g.moveTo(-9,44);g.lineTo(-9,-22);g.quadraticCurveTo(-9,-44,0,-48);g.lineTo(-1,44);g.closePath();g.fill();
+g.fillStyle="#5d6474";g.fillRect(-14,-36,5,10);g.fillRect(9,-36,5,10);g.fillRect(-16,28,7,14);g.fillRect(9,28,7,14);
+g.fillStyle="#ffb020";g.fillRect(-12,-2,4,4);g.fillRect(8,-2,4,4);   // catch pins
+g.restore();}
+function tower(close){const x=TX;g.fillStyle="#2a2f3d";g.fillRect(x+44,ARM-170,18,H-ARM+170);
+g.strokeStyle="#4a5266";g.lineWidth=1;for(let yy=ARM-170;yy<H;yy+=14){g.beginPath();g.moveTo(x+44,yy);g.lineTo(x+62,yy+14);g.moveTo(x+62,yy);g.lineTo(x+44,yy+14);g.stroke();}
+const gap=40-27*close;g.fillStyle="#3b4256";
+g.fillRect(x-gap-7,ARM-6,7,14);g.fillRect(x+gap,ARM-6,7,14);g.fillRect(x-gap-7,ARM-6,x+52-(x-gap-7),5);
+g.fillStyle="#ffb020";g.fillRect(x-gap-7,ARM+8,7,3);g.fillRect(x+gap,ARM+8,7,3);}
+function scene(){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"#060a1c");gr.addColorStop(.55,"#1b3a6e");gr.addColorStop(.85,"#f08a4b");gr.addColorStop(1,"#3a2a3a");
+g.fillStyle=gr;g.fillRect(0,0,W,H);g.fillStyle="#fff";for(const s of stars){g.globalAlpha=.7;g.fillRect(s[0],s[1],s[2],s[2]);}g.globalAlpha=1;
+g.fillStyle="#141a26";g.fillRect(0,580,W,60);g.fillStyle="#222b3d";g.fillRect(0,576,W,6);}
+
+let last=performance.now();
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+g.setTransform(S,0,0,S,0,0);if(shake>0){g.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake=Math.max(0,shake-dt*30);}
+scene();
+if(mode==="play"){sh.t+=dt;
+ if(sh.closing)sh.closed=Math.min(1,sh.closed+dt*9);
+ if(!sh.res||!sh.res.ok){
+  if(sh.t>sh.delay){const sp=sh.y<250?sh.v*1.35:sh.v;sh.y+=sp*dt;}
+  sh.x=TX+(sh.y>150?sh.sway*Math.sin(sh.t*sh.w+sh.ph):0);
+  if(!sh.closing&&sh.y-ARM>16&&!sh.res){sh.res={ok:false,msOff:null};streak=0;flash(t("miss"),"#ff4d5e",t("late"));}
+  if(sh.y+44>=576&&!sh.done){sh.done=true;lives--;shake=10;puff(sh.x,570,50,"#ff8a3a",220);puff(sh.x,560,25,"#777",120);snd(70,.5,"sawtooth",.1);sh.end=sh.t;}
+ }else if(!sh.done){sh.done=true;sh.end=sh.t;}
+ if(sh.done&&sh.t-sh.end>1.1){if(lives<=0)gameOver();else newShip();}
+}
+const closed=mode==="play"?sh.closed:0;tower(closed);
+if(mode==="play"&&!(sh.done&&!(sh.res&&sh.res.ok))){
+ g.strokeStyle="#ffb02033";g.setLineDash([3,6]);g.beginPath();g.moveTo(TX,0);g.lineTo(TX,ARM-50);g.stroke();g.setLineDash([]);
+ const burn=sh.y>170&&!(sh.res&&sh.res.ok);ship(sh.x,sh.y,shipAng(sh.y),1.15,burn);}
+if(mode!=="play")ship(TX,ARM,0,1.15,false);
+for(const p of parts){p.x+=p.vx*dt;p.y+=p.vy*dt;p.l-=dt*1.1;g.globalAlpha=Math.max(0,p.l);g.fillStyle=p.c;g.beginPath();g.arc(p.x,p.y,p.r*(1.6-p.l*.6),0,7);g.fill();}
+g.globalAlpha=1;parts=parts.filter(p=>p.l>0);
+if(mode==="play"){g.fillStyle="#fff";g.font="900 26px system-ui";g.fillText(score,16,36);
+ g.font="16px system-ui";g.fillText("🚀".repeat(Math.max(0,lives)),16,60);
+ if(streak>1){g.fillStyle="#ffb020";g.font="bold 14px system-ui";g.fillText("🔥 x"+streak,16,82);}
+ g.fillStyle="#ffffffaa";g.font="bold 13px system-ui";g.textAlign="center";g.fillText("#"+round,W/2,36);
+ if(round===1&&!sh.closing)g.fillText(t("tapNow"),W/2,620);g.textAlign="left";}
+if(msg){msg.t-=dt;g.globalAlpha=Math.max(0,Math.min(1,msg.t));g.textAlign="center";g.fillStyle=msg.c;g.font="900 30px system-ui";g.fillText(msg.s,W/2,190);
+ if(msg.sub){g.fillStyle="#fff";g.font="bold 16px system-ui";g.fillText(msg.sub,W/2,218);}g.textAlign="left";g.globalAlpha=1;if(msg.t<=0)msg=null;}
+requestAnimationFrame(frame);}
+fit();if(new URLSearchParams(location.search).has('play'))start();else menu();requestAnimationFrame(frame);
+</script>
+<!-- Cloudflare Web Analytics (anonymous page-view count only) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "db277b74e1fa44b182773f4f4db353a1"}'></script><!-- End Cloudflare Web Analytics -->
+</body></html>

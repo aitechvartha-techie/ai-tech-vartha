@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ml"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Starship Mission</title>
+<meta name="description" content="Watch what happened on SpaceX Starship Flight 15 in three short levels, then catch the ship yourself in level 4.">
+<style>
+:root{--bg:#05070f;--ink:#eef2ff;--mute:#9aa3c0;--acc:#ffb020;--ok:#3ddc84;--card:rgba(14,18,36,.94)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,"Noto Sans Malayalam",sans-serif;overflow:hidden;touch-action:none;user-select:none}
+#wrap{position:relative;height:100%;max-width:56.25vh;margin:0 auto}
+canvas{display:block;width:100%;height:100%}
+#hud{position:absolute;top:10px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px;text-shadow:0 1px 3px #000}
+#lv{display:flex;gap:6px}
+#lv i{display:block;width:26px;height:6px;border-radius:3px;background:#ffffff2e}
+#lv i.on{background:var(--acc)} #lv i.done{background:var(--ok)}
+.hb{background:#fff2;border:1px solid #fff4;color:var(--ink);border-radius:8px;padding:4px 9px;font:inherit;font-size:12px}
+#tl{position:absolute;left:12px;right:12px;top:40px;display:none;font-weight:800;text-shadow:0 1px 3px #000}
+#tl.on{display:block}
+#clock{font-size:15px;color:#fff;letter-spacing:.04em}#clock small{color:var(--mute);font-weight:700;font-size:11px;margin-left:6px}
+#strip{position:relative;height:4px;background:#ffffff2e;border-radius:2px;margin:8px 4px 16px}
+#strip i{position:absolute;top:-4px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#2a3150;border:2px solid #9aa3c0}
+#strip i.hit{background:var(--acc);border-color:#fff}
+#strip b{position:absolute;top:-6px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#fff;box-shadow:0 0 10px #ffb020}
+#strip em{position:absolute;top:10px;transform:translateX(-50%);}
+#strip em:first-of-type{transform:none;margin-left:-4px}#strip em:last-of-type{transform:translateX(-100%);margin-left:4px}
+#strip em{font-style:normal;font-size:9px;color:var(--mute);white-space:nowrap}
+#strip em.hit{color:#fff}
+#when{position:absolute;left:14px;right:14px;top:118px;text-align:center;pointer-events:none;opacity:0;transition:opacity .4s}
+#when.on{opacity:1}
+#when .d{display:inline-block;background:rgba(8,10,22,.85);border:1px solid #ffb02088;border-radius:12px;padding:8px 14px}
+#when .t{font-size:20px;font-weight:900;color:var(--acc)}#when .e{font-size:13px;color:#fff;margin-top:2px}
+#cap{position:absolute;left:14px;right:14px;bottom:22px;background:rgba(8,10,22,.82);border:1px solid #ffffff22;border-radius:14px;padding:12px 14px;font-size:16px;line-height:1.5;display:none}
+#cap.on{display:block}
+#cap .tag{font-size:11px;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;font-weight:800;margin-bottom:4px}
+#cap .bar{height:3px;background:#ffffff22;border-radius:2px;margin-top:10px;overflow:hidden}
+#cap .bar b{display:block;height:100%;background:var(--acc);width:0}
+.card{position:absolute;left:14px;right:14px;top:50%;transform:translateY(-50%);background:var(--card);border:1px solid #ffffff1f;border-radius:18px;padding:20px 18px;text-align:center;display:none;max-height:86%;overflow:auto}
+.card.on{display:block}
+.card h1{font-size:24px;margin:0 0 8px;color:var(--acc)} .card h2{font-size:19px;margin:0 0 8px;color:var(--acc)}
+.card p{margin:8px 0;line-height:1.55;font-size:15px}
+.card .tag{font-size:12px;color:var(--mute);letter-spacing:.05em;text-transform:uppercase}
+.btn{display:inline-block;margin-top:12px;background:var(--acc);color:#1a1200;border:0;border-radius:12px;padding:12px 26px;font:inherit;font-weight:800;font-size:17px;text-decoration:none}
+.btn.alt{background:#ffffff1a;color:var(--ink);font-size:14px;padding:10px 18px}
+.foot{font-size:11px;color:var(--mute);margin-top:12px}
+</style></head><body>
+<div id="wrap">
+<canvas id="c"></canvas>
+<div id="hud"><div id="lv"><i></i><i></i><i></i><i></i></div><div><button class="hb" id="skip"></button> <button class="hb" id="lang">EN</button></div></div>
+<div id="tl"><div id="clock"></div><div id="strip"></div></div>
+<div id="when"><div class="d"><div class="t" id="whenT"></div><div class="e" id="whenE"></div></div></div>
+<div id="cap"><div class="tag" id="capT"></div><div id="capX"></div><div class="bar"><b id="capB"></b></div></div>
+<div class="card" id="card"></div>
+</div>
+<script>
+// Levels 1–3 just SHOW what happened on Flight 15 (auto-play with captions); level 4 = the catch game (index.html?play).
+// Facts: Space.com, Wikipedia, NSS (Starship Flight 15, Nov 2026). Simplified physics, not real figures.
+const T={
+ml:{title:"Starship Mission · Flight 15",intro:"നവംബർ 2026-ൽ SpaceX ചരിത്രം കുറിച്ചു: space-ൽ നിന്ന് തിരിച്ചുവന്ന Starship-നെ tower-ന്റെ കൈകൾ (chopsticks) പിടിച്ചെടുത്തു! ആദ്യം എന്താണ് നടന്നതെന്ന് കാണാം. അവസാന level-ൽ ആ catch നിങ്ങൾ ചെയ്യണം!",
+start:"Mission തുടങ്ങാം 🚀",skip:"Catch-ലേക്ക് ⏭",
+l1:"Level 1 · Launch",c1a:"33 engine-കളുള്ള Super Heavy booster, Starship-നെ മുകളിലേക്ക് തള്ളുന്നു!",c1b:"ഇതാണ് hot staging: booster ഓഫ് ആകും മുൻപേ ship-ന്റെ engine-കൾ കത്തും, ship വേർപെട്ട് മുന്നോട്ട്!",
+c1c:"Booster-ന് fuel കുറവായിരുന്നു. അതുകൊണ്ട് tower-ലേക്ക് മടങ്ങാതെ Gulf of Mexico-യിൽ കടലിൽ ഇറങ്ങി.",
+l2:"Level 2 · Orbit",c2a:"Ship ഭൂമിയെ ചുറ്റാൻ തുടങ്ങി. ഉള്ളിൽ 26 Starlink satellites!",c2b:"ഒന്നിനു പിറകെ ഒന്നായി 26-ഉം space-ൽ ഇറക്കി. ഏകദേശം ഒരു ദിവസം ship space-ൽ കറങ്ങി.",
+c2c:"രസം: ഇറക്കിയ satellites തന്നെ ship-ന്റെ heat shield-ന്റെ ഫോട്ടോ എടുത്തു. Result: 'good shape'!",
+l3:"Level 3 · Reentry",c3a:"തിരിച്ചു വരുമ്പോൾ മുന്നിലെ വായു ഞെരുങ്ങി തീയായി മാറും. Ship ഒരു തീഗോളം!",c3b:"അടിയിലെ കറുത്ത tiles ആണ് heat shield. അത് എപ്പോഴും താഴേക്ക് വേണം.",
+c3c:"Ship വീഴുന്നത് ഒരു skydiver-നെ പോലെ ചരിഞ്ഞ് കിടന്ന്. വായു തന്നെ speed കുറയ്ക്കും. Pilot ഇല്ല, എല്ലാം ship തന്നെ ചെയ്യുന്നു!",
+l4:"Level 4 · CATCH",l4p:"അവസാന നിമിഷം engine കത്തി ship നിവരും. Tower-ന്റെ chopsticks കൃത്യ സമയത്ത് അടയണം. ഇനി നിങ്ങളുടെ ഊഴം!",
+go:"Catch ചെയ്യാം 🎯",again:"Mission വീണ്ടും കാണാം",
+src:"വിവരങ്ങൾ: Space.com, Wikipedia, NSS (Starship Flight 15, Nov 2026). Fan-made, SpaceX-മായി ബന്ധമില്ല. ലളിതമാക്കിയ physics."},
+en:{title:"Starship Mission · Flight 15",intro:"In November 2026 SpaceX made history: the tower's arms (the chopsticks) caught a Starship coming back from space! First, watch what happened. In the last level, the catch is yours!",
+start:"Start the mission 🚀",skip:"Skip to catch ⏭",
+l1:"Level 1 · Launch",c1a:"The 33-engine Super Heavy booster pushes Starship up!",c1b:"This is hot staging: the ship lights its engines before the booster shuts down, and breaks away!",
+c1c:"The booster was low on fuel, so instead of flying back to the tower it splashed down in the Gulf of Mexico.",
+l2:"Level 2 · Orbit",c2a:"The ship starts circling the Earth, carrying 26 Starlink satellites!",c2b:"It released all 26, one after another, and spent about a day in space.",
+c2c:"Fun part: the satellites it released photographed the ship's heat shield. Result: 'good shape'!",
+l3:"Level 3 · Reentry",c3a:"Coming back, the air in front gets squeezed into fire. The ship is a fireball!",c3b:"The black tiles underneath are the heat shield. They must always face down.",
+c3c:"The ship falls lying flat, like a skydiver, so the air slows it down. No pilot: the ship does it all by itself!",
+l4:"Level 4 · CATCH",l4p:"At the last moment the engines fire and the ship flips upright. The tower's chopsticks must close at exactly the right time. Your turn!",
+go:"Catch it 🎯",again:"Watch the mission again",
+src:"Facts: Space.com, Wikipedia, NSS (Starship Flight 15, Nov 2026). Fan-made, not affiliated with SpaceX. Simplified physics."}};
+let L=(()=>{try{return localStorage.getItem("ssLang")||"ml"}catch(e){return"ml"}})();
+const t=k=>T[L][k];
+const cv=document.getElementById("c"),g=cv.getContext("2d"),W=360,H=640;let S=1;
+function fit(){const r=cv.getBoundingClientRect(),d=devicePixelRatio||1;cv.width=r.width*d;cv.height=r.height*d;S=cv.width/W;}
+addEventListener("resize",fit);
+const $=id=>document.getElementById(id),card=$("card"),cap=$("cap");
+let AC;function snd(f=440,d=.08,type="square",v=.05){try{AC=AC||new AudioContext();const o=AC.createOscillator(),gg=AC.createGain();o.type=type;o.frequency.value=f;gg.gain.value=v;gg.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.connect(gg).connect(AC.destination);o.start();o.stop(AC.currentTime+d);}catch(e){}}
+let rum;function rumble(on){try{AC=AC||new AudioContext();if(on&&!rum){const b=AC.createBuffer(1,AC.sampleRate,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const s=AC.createBufferSource();s.buffer=b;s.loop=true;const f=AC.createBiquadFilter();f.type="lowpass";f.frequency.value=180;const gg=AC.createGain();gg.gain.value=.22;s.connect(f).connect(gg).connect(AC.destination);s.start();rum={s,gg};}if(!on&&rum){rum.s.stop();rum=null;}}catch(e){}}
+
+// ---------- per-level sound effects (WebAudio synth, no files) ----------
+function noise(dur,lp0,lp1,vol,att=.05){try{AC=AC||new AudioContext();const n=AC.createBuffer(1,AC.sampleRate*dur,AC.sampleRate),d=n.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+ const s=AC.createBufferSource();s.buffer=n;const f=AC.createBiquadFilter();f.type="lowpass";f.frequency.setValueAtTime(lp0,AC.currentTime);f.frequency.linearRampToValueAtTime(lp1,AC.currentTime+dur);
+ const g=AC.createGain();g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(vol,AC.currentTime+att);g.gain.linearRampToValueAtTime(0,AC.currentTime+dur);
+ s.connect(f).connect(g).connect(AC.destination);s.start();}catch(e){}}
+function boom(){try{AC=AC||new AudioContext();const o=AC.createOscillator(),g=AC.createGain();o.type="sine";o.frequency.setValueAtTime(110,AC.currentTime);o.frequency.exponentialRampToValueAtTime(35,AC.currentTime+.8);
+ g.gain.setValueAtTime(.5,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+1);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+1);noise(.5,2500,300,.35,.01);}catch(e){}}
+function chime(){[784,988,1319].forEach((f,i)=>setTimeout(()=>snd(f,.5,"sine",.06),i*120));}
+const CUES=[[[4.6,boom],[10.3,()=>noise(1.6,1800,400,.3,.02)]],[[0,()=>noise(12,260,180,.06,1.5)],[8.1,()=>{snd(2400,.04,"square",.05);setTimeout(()=>snd(1800,.05,"square",.04),60);}]],
+ [[0,()=>noise(11,300,2600,.32,2.5)],[7.5,()=>noise(4,1200,500,.2,.5)]]];
+let cueDone=new Set();
+// ---------- levels: each = duration + captions at times ----------
+const LV=[{d:13,caps:[[0,"c1a"],[4.2,"c1b"],[8.4,"c1c"]]},{d:12,caps:[[0,"c2a"],[4,"c2b"],[8,"c2c"]]},{d:12,caps:[[0,"c3a"],[4,"c3b"],[8,"c3c"]]}];
+let mode="intro",lv=0,lt=0,capKey=null,stars=[],parts=[],st={};
+for(let i=0;i<120;i++)stars.push([Math.random()*W,Math.random()*H,Math.random()*1.5+.3]);
+function dots(){[...$("lv").children].forEach((e,i)=>e.className=i<lv?"done":i===lv&&mode!=="intro"?"on":"");}
+function btn(label,fn,alt){const id="b"+Math.random().toString(36).slice(2,7);setTimeout(()=>{const b=$(id);if(b)b.onclick=fn;},0);return `<button class="btn${alt?" alt":""}" id="${id}">${label}</button>`;}
+function show(h){card.innerHTML=h;card.classList.add("on");cap.classList.remove("on");}
+function hide(){card.classList.remove("on");}
+function intro(){mode="intro";lv=0;rumble(false);dots();$("skip").textContent=t("skip");
+show(`<div class="tag">AI Tech Vartha · Space game</div><h1>${t("title")}</h1><p>${t("intro")}</p>${btn(t("start"),()=>level(0))}<div class="foot">${t("src")}</div>`);}
+function level(i){hide();lv=i;lt=0;capKey=null;mode="play";parts=[];st={};dots();cap.classList.add("on");rumble(i===0);if(i===0)snd(70,1.2,"sawtooth",.05);cueDone=new Set();showWhen(i);}
+function level4(){mode="final";lv=3;dots();rumble(false);chime();
+show(`<h2>${t("l4")}</h2><p class="tag">T+ 22:34 · 15 Nov 2026, 02:51 IST</p><p>${t("l4p")}</p><a class="btn" href="catch.html?play">${t("go")}</a><br>${btn(t("again"),intro,1)}<div class="foot">${t("src")}</div>`);}
+$("skip").onclick=level4;
+$("lang").onclick=()=>{L=L==="ml"?"en":"ml";try{localStorage.setItem("ssLang",L)}catch(e){};$("lang").textContent=L==="ml"?"EN":"മല";$("skip").textContent=t("skip");capKey=null;if(mode==="intro")intro();if(mode==="final")level4();};
+$("lang").textContent=L==="ml"?"EN":"മല";
+
+
+// ---------- mission timeline (Flight 15). Launch 13 Nov 2026 22:47 UTC; catch 14 Nov 21:21 UTC (~T+22 h 34 m).
+// Staging/splashdown times are typical values (marked ~). Strip positions are spaced for reading, not to scale.
+const MS=[ // [mission seconds, strip position 0..1, ml label, en label]
+ [0,0,"Launch","Launch"],[150,.17,"Stage~","Stage~"],[420,.34,"Booster~","Booster~"],
+ [3000,.52,"Starlink","Starlink"],[77760,.76,"Deorbit","Deorbit"],[81240,1,"Catch","Catch"]];
+const LAUNCH=Date.UTC(2026,10,13,22,47,0);
+const WHEN=[["14 Nov 2026 · 04:17 IST","Starbase, Texas-ൽ നിന്ന് Launch","Launch from Starbase, Texas"],
+ ["14 Nov · ~05:00 IST","Orbit-ൽ · 26 Starlink satellites ഇറക്കി","In orbit · 26 Starlinks released"],
+ ["15 Nov · 01:53 IST","Deorbit burn · തിരിച്ചുവരവ് തുടങ്ങുന്നു","Deorbit burn · re-entry begins"]];
+function showWhen(i){const w=WHEN[i];document.getElementById("whenT").textContent=w[0];document.getElementById("whenE").textContent=L==="ml"?w[1]:w[2];
+ const el=document.getElementById("when");el.classList.add("on");clearTimeout(showWhen.t);showWhen.t=setTimeout(()=>el.classList.remove("on"),3200);}
+// level time -> mission time (piecewise), per level
+const MAP=[[[0,0],[4.2,150],[8.4,420],[13,520]],[[0,600],[4,3000],[8,6000],[12,40000]],[[0,77760],[4,79500],[8,80600],[12,81100]]];
+function missionT(){if(mode==="final")return 81240;if(mode!=="play")return 0;const m=MAP[lv];for(let i=1;i<m.length;i++){if(lt<=m[i][0]){const k=(lt-m[i-1][0])/(m[i][0]-m[i-1][0]);return m[i-1][1]+k*(m[i][1]-m[i-1][1]);}}return m[m.length-1][1];}
+function pos(ms){for(let i=1;i<MS.length;i++)if(ms<=MS[i][0]){const k=(ms-MS[i-1][0])/(MS[i][0]-MS[i-1][0]);return MS[i-1][1]+k*(MS[i][1]-MS[i-1][1]);}return 1;}
+const strip=document.getElementById("strip");
+strip.innerHTML=MS.map(m=>`<i style="left:${m[1]*100}%"></i><em style="left:${m[1]*100}%">${m[2]}</em>`).join("")+'<b id="dot"></b>';
+function hhmmss(x){x=Math.floor(x);const h=Math.floor(x/3600),m=Math.floor(x%3600/60),s=x%60;return `T+ ${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;}
+function ist(ms){const d=new Date(LAUNCH+ms*1000+5.5*3600e3);const mo=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getUTCMonth()];
+ return `${d.getUTCDate()} ${mo}, ${String(d.getUTCHours()).padStart(2,"0")}:${String(d.getUTCMinutes()).padStart(2,"0")} IST`;}
+function drawTimeline(){const tl=document.getElementById("tl");const on=mode==="play"||mode==="final";tl.classList.toggle("on",on);if(!on)return;
+ const ms=missionT();document.getElementById("clock").innerHTML=hhmmss(ms)+`<small>${ist(ms)}</small>`;
+ document.getElementById("dot").style.left=pos(ms)*100+"%";
+ [...strip.querySelectorAll("i")].forEach((e,i)=>e.classList.toggle("hit",ms>=MS[i][0]));[...strip.querySelectorAll("em")].forEach((e,i)=>{e.classList.toggle("hit",ms>=MS[i][0]);e.textContent=L==="ml"?MS[i][2]:MS[i][3];});}
+
+// ---------- drawing helpers (same art as the catch game) ----------
+function sky(alt){const gr=g.createLinearGradient(0,0,0,H);const k=Math.max(0,Math.min(1,alt));
+gr.addColorStop(0,`rgb(${8+20*(1-k)},${12+60*(1-k)},${30+120*(1-k)})`);gr.addColorStop(1,`rgb(${10+70*(1-k)},${16+110*(1-k)},${40+160*(1-k)})`);
+g.fillStyle=gr;g.fillRect(0,0,W,H);g.fillStyle="#fff";for(const s of stars){g.globalAlpha=k*.9;g.fillRect(s[0],s[1],s[2],s[2]);}g.globalAlpha=1;}
+function ship(x,y,ang,sc=1,belly=true,flame=0){g.save();g.translate(x,y);g.rotate(ang);g.scale(sc,sc);
+if(flame>0){for(let i=0;i<3;i++){g.fillStyle=i?"#ffd27a":"#ff7a1a";g.globalAlpha=.85;g.beginPath();g.moveTo(-6+i*2,44);g.lineTo(6-i*2,44);g.lineTo(0,44+flame*(26-i*7)*(0.8+Math.random()*.4));g.fill();}g.globalAlpha=1;}
+const gr=g.createLinearGradient(-9,0,9,0);gr.addColorStop(0,"#8d96a8");gr.addColorStop(.5,"#e9edf5");gr.addColorStop(1,"#7b8496");
+g.fillStyle=gr;g.beginPath();g.moveTo(-9,44);g.lineTo(-9,-22);g.quadraticCurveTo(-9,-44,0,-48);g.quadraticCurveTo(9,-44,9,-22);g.lineTo(9,44);g.closePath();g.fill();
+if(belly){g.fillStyle="#15171d";g.beginPath();g.moveTo(-9,44);g.lineTo(-9,-22);g.quadraticCurveTo(-9,-44,0,-48);g.lineTo(-1,44);g.closePath();g.fill();}
+g.fillStyle="#5d6474";g.fillRect(-14,-36,5,10);g.fillRect(9,-36,5,10);g.fillRect(-16,28,7,14);g.fillRect(9,28,7,14);g.restore();}
+function booster(x,y,flame){g.save();g.translate(x,y);
+if(flame){g.fillStyle="#ff8a1a";g.globalAlpha=.9;g.beginPath();g.moveTo(-11,70);g.lineTo(11,70);g.lineTo(0,70+40+Math.random()*25);g.fill();g.fillStyle="#fff1b0";g.beginPath();g.moveTo(-6,70);g.lineTo(6,70);g.lineTo(0,96+Math.random()*10);g.fill();g.globalAlpha=1;}
+const gr=g.createLinearGradient(-11,0,11,0);gr.addColorStop(0,"#868fa0");gr.addColorStop(.5,"#dfe4ee");gr.addColorStop(1,"#737c8e");
+g.fillStyle=gr;g.fillRect(-11,-70,22,140);g.fillStyle="#4d5464";for(let i=-1;i<=1;i+=2)g.fillRect(i*11-(i<0?5:0),-70,5,7);g.restore();}
+function tower(x,armY){g.fillStyle="#2a2f3d";g.fillRect(x+22,armY-140,16,H-armY+140);g.fillStyle="#3b4256";g.fillRect(x-40,armY,6,10);g.fillRect(x+34,armY,6,10);g.fillRect(x-40,armY,70,4);}
+function puff(x,y,n,c,sp=60){for(let i=0;i<n;i++)parts.push({x,y,vx:(Math.random()-.5)*sp,vy:(Math.random()-.2)*sp,l:1,c,r:2+Math.random()*4});}
+
+// ---------- scenes (auto) ----------
+function scene1(dt){const T=lt;
+if(T<8.4){const climb=Math.min(1,T/8.4),by=480-climb*230;sky(climb*.9);
+if(T<1.5){g.fillStyle="#1b2230";g.fillRect(0,560-(T*30),W,80);tower(W/2+40,330);}
+if(T<4.6){booster(W/2,by,true);ship(W/2,by-118,0,1.1,false);if(Math.random()<.7)puff(W/2,by+90,1,"#cfd5e0",40);}
+else{if(!st.sep){st.sep=1;puff(W/2,by-50,34,"#ffcc66",130);snd(880,.12);}const k=T-4.6;booster(W/2,by+k*(30+k*40),false);ship(W/2,by-118-k*55,0,1.1,false,1);
+g.fillStyle="#ffd98a";g.font="900 22px system-ui";g.textAlign="center";if(k<1.6)g.fillText("HOT STAGING!",W/2,150);g.textAlign="left";}}
+else{rumble(false);sky(.1);const sea=g.createLinearGradient(0,420,0,H);sea.addColorStop(0,"#1d5f8a");sea.addColorStop(1,"#0b2a44");g.fillStyle=sea;g.fillRect(0,420,W,H);
+const k=Math.min(1,(T-8.4)/2.2);g.save();g.translate(W/2,250+k*150);g.rotate(k*.5);booster(0,0,k<.8);g.restore();if(k>=1&&Math.random()<.5)puff(W/2+(Math.random()-.5)*60,440,2,"#e8f4ff",50);
+g.fillStyle="#fff";g.font="bold 13px system-ui";g.textAlign="center";g.fillText("Gulf of Mexico · Booster B22",W/2,120);g.textAlign="left";}}
+function scene2(dt){sky(1);g.fillStyle="#123a7a";g.beginPath();g.arc(W/2,H+620,800,0,7);g.fill();g.strokeStyle="#5fa8ff55";g.lineWidth=6;g.beginPath();g.arc(W/2,H+620,803,0,7);g.stroke();
+const sx=W/2,sy=280;ship(sx,sy,Math.PI/2,1.8,true);st.sats=st.sats||[];st.n=st.n||0;st.cd=(st.cd||0)-dt;
+if(lt>3.6&&st.n<26&&st.cd<=0){st.n++;st.cd=.16;snd(1000+st.n*12,.04,"square",.03);st.sats.push({x:sx-20,y:sy+6,vx:-24-Math.random()*26,vy:14+Math.random()*16});}
+for(const s of st.sats){s.x+=s.vx*dt;s.y+=s.vy*dt;g.fillStyle="#cfd8ea";g.fillRect(s.x-6,s.y-2,12,4);g.fillStyle="#3a6fd8";g.fillRect(s.x-6,s.y+2,12,3);}
+g.font="bold 16px system-ui";g.fillStyle="#fff";g.fillText(`Starlink: ${st.n}/26`,24,232);
+if(lt>8){g.strokeStyle="#ffd98a";g.lineWidth=2;g.setLineDash([4,4]);g.beginPath();g.moveTo(70,266);g.lineTo(sx-30,sy-10);g.stroke();g.setLineDash([]);g.fillStyle="#ffd98a";g.font="bold 12px system-ui";g.fillText("📷 heat shield: good shape",20,258);}}
+function scene3(dt){const k=Math.min(1,lt/12);sky(1-k*.75);const cx=W/2,cy=300,a=Math.sin(lt*1.6)*.12*(1-k);
+const glow=g.createRadialGradient(0,40,5,0,40,110);glow.addColorStop(0,"rgba(255,200,120,.9)");glow.addColorStop(.4,"rgba(255,90,40,.5)");glow.addColorStop(1,"rgba(255,40,80,0)");
+g.save();g.translate(cx,cy);g.rotate(a);g.fillStyle=glow;g.beginPath();g.ellipse(0,40,100,60,0,0,7);g.fill();g.restore();
+for(let i=0;i<4;i++)parts.push({x:cx+(Math.random()-.5)*120,y:cy+50+Math.random()*20,vx:(Math.random()-.5)*20,vy:-160-Math.random()*80,l:.6,c:Math.random()<.5?"#ff8a3a":"#ffd27a",r:1.5});
+ship(cx,cy,Math.PI/2+a+Math.PI,1.4,true);
+if(lt>4&&lt<8){g.strokeStyle="#ffd98a";g.lineWidth=2;g.beginPath();g.moveTo(cx+70,cy+70);g.lineTo(cx+30,cy+18);g.stroke();g.fillStyle="#ffd98a";g.font="bold 13px system-ui";g.fillText("HEAT SHIELD",cx+40,cy+90);}
+if(lt>8){g.fillStyle="#fff";g.font="bold 14px system-ui";g.textAlign="center";g.fillText("🪂 belly flop · NO PILOT",W/2,120);g.textAlign="left";}}
+
+// ---------- loop ----------
+let last=performance.now();
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;g.setTransform(S,0,0,S,0,0);
+if(mode==="play"){lt+=dt;const L0=LV[lv];CUES[lv].forEach((c,k)=>{if(lt>=c[0]&&!cueDone.has(k)){cueDone.add(k);c[1]();}});[scene1,scene2,scene3][lv](dt);
+let key=null;for(const c of L0.caps)if(lt>=c[0])key=c[1];
+if(key!==capKey){capKey=key;$("capT").textContent=t("l"+(lv+1));$("capX").textContent=t(key);}
+$("capB").style.width=Math.min(100,lt/L0.d*100)+"%";
+if(lt>=L0.d){if(lv<2)level(lv+1);else level4();}}
+else{sky(.6);ship(W/2,330,0,1.3,true);tower(W/2+20,420);}
+for(const p of parts){p.x+=p.vx*dt;p.y+=p.vy*dt;p.l-=dt*1.2;g.globalAlpha=Math.max(0,p.l);g.fillStyle=p.c;g.beginPath();g.arc(p.x,p.y,p.r*(1.5-p.l*.5),0,7);g.fill();}
+g.globalAlpha=1;parts=parts.filter(p=>p.l>0);drawTimeline();requestAnimationFrame(frame);}
+fit();intro();requestAnimationFrame(frame);
+</script>
+<!-- Cloudflare Web Analytics (anonymous page-view count only) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "db277b74e1fa44b182773f4f4db353a1"}'></script><!-- End Cloudflare Web Analytics -->
+</body></html>
