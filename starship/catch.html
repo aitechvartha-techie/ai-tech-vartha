@@ -37,7 +37,7 @@ real:"യഥാർത്ഥ Ship 42 പിടിച്ചത് launch കഴി
 why:"എന്തിനാണ് പിടിക്കുന്നത്? പിടിച്ച ship വീണ്ടും പറത്താം, വിമാനം പോലെ. റോക്കറ്റ് യാത്രയുടെ ചെലവ് കുത്തനെ കുറയും.",
 quoteBy:"SpaceX webcast, Dan Huot",
 follow:"ഇതുപോലുള്ള tech games-ന്: @ai_tech_vartha",
-sh1:"ഞാൻ Starship-നെ ",sh2:" തവണ പിടിച്ചു! Best timing ",sh3:" ms. നിനക്ക് പറ്റുമോ? 🚀",
+cmt:"📸 Score reel-ൽ comment ചെയ്യാം",cmtDone:"✓ Score copy ചെയ്തു, card save ചെയ്തു",cmtHow:"Reel-ൽ comment box-ൽ <b>paste</b> ചെയ്യൂ. Photo icon ഉണ്ടെങ്കിൽ save ചെയ്ത card-ഉം ചേർക്കാം.",openReel:"Reel തുറക്കാം →",story2:"Story-ൽ share ചെയ്യാം",beat:"എന്നെ തോൽപ്പിക്കാമോ?",cTxt:"🚀 Starship catch: score SCORE · CATCHES catches · best MS ms! ഇത് വെട്ടിക്കാമോ?",sh1:"ഞാൻ Starship-നെ ",sh2:" തവണ പിടിച്ചു! Best timing ",sh3:" ms. നിനക്ക് പറ്റുമോ? 🚀",
 src:"വിവരങ്ങൾ: Space.com, Wikipedia (Starship Flight 15). Fan-made game, SpaceX-മായി ബന്ധമില്ല."},
 en:{title:"Can you catch Starship?",
 fact:"November 2026 · Flight 15: SpaceX's tower caught a Starship coming back from orbit with its steel arms (the chopsticks). A world first.",
@@ -50,7 +50,7 @@ real:"The real Ship 42 was caught about 22.5 hours after launch. The booster was
 why:"Why catch it? A caught ship can fly again, like an airliner, so rocket trips get far cheaper.",
 quoteBy:"SpaceX webcast, Dan Huot",
 follow:"More tech games: @ai_tech_vartha",
-sh1:"I caught Starship ",sh2:" times! Best timing ",sh3:" ms. Can you? 🚀",
+cmt:"📸 Comment my score on the reel",cmtDone:"✓ Score copied, card saved",cmtHow:"<b>Paste</b> it in the reel's comment box. If you see a photo icon there, add the saved card too.",openReel:"Open the reel →",story2:"Share to Story",beat:"Can you beat me?",cTxt:"🚀 Starship catch: score SCORE · CATCHES catches · best MS ms! Can you beat it?",sh1:"I caught Starship ",sh2:" times! Best timing ",sh3:" ms. Can you? 🚀",
 src:"Facts: Space.com, Wikipedia (Starship Flight 15). Fan-made game, not affiliated with SpaceX."}};
 const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 let L=store.get("ssLang","ml");const t=k=>T[L][k];
@@ -104,9 +104,36 @@ function gameOver(){mode="over";const prev=+store.get("ssBest",0),nb=score>prev;
 const r=t("rank")[Math.min(3,Math.floor(catches/4))];
 show(`<div class="tag">${t("over")}</div>${nb&&score>0?`<p style="color:var(--acc);font-weight:800">${t("newBest")}</p>`:""}<div class="big">${score}</div><p><b>${r}</b></p>
 <div class="row"><div><span class="tag">${t("catches")}</span><b>${catches}</b></div><div><span class="tag">${t("bestMs")}</span><b>${bestMs==null?"–":bestMs+" ms"}</b></div><div><span class="tag">${t("best")}</span><b>${Math.max(prev,score)}</b></div></div>
-${btn(t("again"),start)} ${catches?btn(t("share"),share,1):""}
+${btn(t("again"),start)}${catches?`<div id="cmtBox">${btn(t("cmt"),commentScore)}</div>${btn(t("story2"),shareCard,1)} ${btn(t("share"),share,1)}`:""}
 <p style="margin-top:16px">${t("real")}</p><q>${QUOTE}</q><div class="foot">— ${t("quoteBy")}</div><p>${t("why")}</p>
 <p><a href="index.html" style="color:var(--acc)">${t("story")}</a></p><p class="foot">${t("follow")}<br>${t("src")}</p>`);}
+const REEL="https://www.instagram.com/reel/DgCU5REJPeK/";
+function cmtText(){return t("cTxt").replace("SCORE",score).replace("CATCHES",catches).replace("MS",bestMs??"–");}
+function makeCard(){const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+ const gr=x.createLinearGradient(0,0,0,H);gr.addColorStop(0,"#05070f");gr.addColorStop(.62,"#1b2350");gr.addColorStop(1,"#ff8a3d");x.fillStyle=gr;x.fillRect(0,0,W,H);
+ for(let i=0;i<160;i++){const r=Math.sin(i*127.1)*43758.5,q=r-Math.floor(r),r2=Math.sin(i*311.7)*24634.6,q2=r2-Math.floor(r2);x.fillStyle=`rgba(255,255,255,${.25+.6*q2})`;x.fillRect(q*W,q2*H*.6,2+2*q,2+2*q);}
+ // tower + arms + ship (lower right, clear of the score)
+ x.save();x.translate(110,300);x.fillStyle="#2a2f45";x.fillRect(760,560,70,790);x.strokeStyle="#4a5275";x.lineWidth=4;for(let y=560;y<1350;y+=46){x.beginPath();x.moveTo(760,y);x.lineTo(830,y+46);x.moveTo(830,y);x.lineTo(760,y+46);x.stroke();}
+ x.fillStyle="#3a4060";x.fillRect(560,700,200,22);x.fillRect(560,760,200,22);
+ x.fillStyle="#dfe5ef";x.beginPath();x.moveTo(620,470);x.quadraticCurveTo(660,380,700,470);x.lineTo(700,800);x.lineTo(620,800);x.closePath();x.fill();
+ x.fillStyle="#9aa3b5";x.fillRect(600,520,20,60);x.fillRect(700,520,20,60);x.fillRect(596,740,24,60);x.fillRect(700,740,24,60);
+ x.fillStyle="#ffb020";x.fillRect(560,728,200,6);x.restore();
+ x.textAlign="left";x.fillStyle="#ffb020";x.font="800 40px system-ui,sans-serif";x.fillText("STARSHIP CATCH · FLIGHT 15",70,130);
+ x.fillStyle="#eef2ff";x.font="700 60px system-ui,'Noto Sans Malayalam',sans-serif";x.fillText(t("beat"),70,220);
+ x.fillStyle="#9aa3c0";x.font="600 36px system-ui,sans-serif";x.fillText(t("score").toUpperCase(),70,360);
+ x.fillStyle="#3ddc84";x.font="900 190px system-ui,sans-serif";x.fillText(String(score),62,540);
+ x.fillStyle="#eef2ff";x.font="700 46px system-ui,sans-serif";x.fillText(`🚀 ${catches} ${t("catches").toLowerCase()}`,70,650);
+ x.fillText(`⏱ ${bestMs??"–"} ms`,70,720);
+ x.fillStyle="#ffd98a";x.font="700 44px system-ui,sans-serif";x.fillText(t("rank")[Math.min(3,Math.floor(catches/4))],70,800);
+ x.fillStyle="rgba(5,7,15,.72)";x.fillRect(0,H-150,W,150);x.fillStyle="#fff";x.font="800 44px system-ui,sans-serif";x.fillText("@ai_tech_vartha",70,H-82);
+ x.fillStyle="#cfd6ee";x.font="500 30px system-ui,sans-serif";x.fillText("Play: link in bio · AI Tech Vartha",70,H-38);
+ return new Promise(res=>c.toBlob(res,"image/png"));}
+async function commentScore(){const txt=cmtText();try{await navigator.clipboard.writeText(txt);}catch(e){}
+ try{const b=await makeCard(),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=`starship-score-${score}.png`;document.body.appendChild(a);a.click();a.remove();}catch(e){}
+ const box=$("cmtBox");if(box)box.innerHTML=`<p style="color:var(--ok);font-weight:800;margin:12px 0 4px">${t("cmtDone")}</p><p style="font-size:14px;margin:4px 0">${t("cmtHow")}</p><p style="font-size:13px;color:var(--mute);margin:4px 0">${txt}</p><a class="btn" href="${REEL}" target="_blank" rel="noopener">${t("openReel")}</a>`;}
+async function shareCard(){try{const b=await makeCard(),f=new File([b],`starship-score-${score}.png`,{type:"image/png"});
+ if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:cmtText()});return;}
+ const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=f.name;a.click();}catch(e){}}
 function share(){const txt=t("sh1")+catches+t("sh2")+(bestMs??"–")+t("sh3"),url=location.href.split("?")[0];
 if(navigator.share)navigator.share({title:t("title"),text:txt,url}).catch(()=>{});else{try{navigator.clipboard.writeText(txt+" "+url);flash("Link copied ✓","#3ddc84");}catch(e){}}}
 $("lang").onclick=()=>{L=L==="ml"?"en":"ml";store.set("ssLang",L);$("lang").textContent=L==="ml"?"EN":"മല";if(mode==="menu")menu();if(mode==="over")gameOver();};
